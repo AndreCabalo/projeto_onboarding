@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 @Entity
-@Table(name = "carrinhos")
+@Table(name = "carrinho")
 @Getter
 @Setter
 @NoArgsConstructor
