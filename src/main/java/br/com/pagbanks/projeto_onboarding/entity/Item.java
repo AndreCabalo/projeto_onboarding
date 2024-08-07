@@ -1,4 +1,4 @@
-package br.com.pagbanks.projeto_onboarding.model;
+package br.com.pagbanks.projeto_onboarding.entity;
 
 import jakarta.persistence.*;
 import lombok.*;

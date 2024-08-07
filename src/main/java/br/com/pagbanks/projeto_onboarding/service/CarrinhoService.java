@@ -1,7 +1,8 @@
 package br.com.pagbanks.projeto_onboarding.service;
 
-import br.com.pagbanks.projeto_onboarding.model.Carrinho;
-import br.com.pagbanks.projeto_onboarding.model.Item;
+import br.com.pagbanks.projeto_onboarding.entity.Carrinho;
+import br.com.pagbanks.projeto_onboarding.entity.Item;
+import br.com.pagbanks.projeto_onboarding.exceptions.CarrinhoNotFoundException;
 import br.com.pagbanks.projeto_onboarding.repository.CarrinhoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -35,8 +36,9 @@ public class CarrinhoService {
             carrinho.getListaItens().add(Item);
             carrinho.setValorTotal((carrinho.getValorTotal()) + Item.getPreco());
             return carrinhoRepository.save(carrinho);
+        }else {
+            throw new CarrinhoNotFoundException("Carrinho não encontrado, item não adicionado");
         }
-        return null;
     }
 
     public Carrinho removeItem(UUID idCarrinho, Item item) {
@@ -46,7 +48,8 @@ public class CarrinhoService {
             carrinho.getListaItens().remove(item);
             carrinho.setValorTotal((carrinho.getValorTotal()) - item.getPreco());
             return carrinhoRepository.save(carrinho);
+        }else {
+            throw new CarrinhoNotFoundException("Carrinho não encontrado, item não removido");
         }
-        return null;
     }
 }

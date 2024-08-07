@@ -1,6 +1,6 @@
 package br.com.pagbanks.projeto_onboarding.service;
 
-import br.com.pagbanks.projeto_onboarding.model.Item;
+import br.com.pagbanks.projeto_onboarding.entity.Item;
 import br.com.pagbanks.projeto_onboarding.repository.ItemRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
