@@ -1,5 +1,6 @@
 package br.com.pagbanks.projeto_onboarding.entity;
 
+import br.com.pagbanks.projeto_onboarding.dto.ItemDto;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -12,15 +13,21 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode
+@EqualsAndHashCode(of = "id")
 public class Item {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @SequenceGenerator(name = "items_seq", sequenceName = "items_seq", allocationSize = 1)
     private UUID id;
     private String nome;
     private double preco;
     private int quantidadeEstoque;
 
+
+    public Item(ItemDto itemDto) {
+        this.nome = itemDto.nome();
+        this.preco = itemDto.preco();
+        this.quantidadeEstoque = itemDto.quantidadeEstoque();
+    }
 }

@@ -1,5 +1,6 @@
 package br.com.pagbanks.projeto_onboarding.entity;
 
+import br.com.pagbanks.projeto_onboarding.dto.CarrinhoDto;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;
@@ -13,11 +14,11 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode
+@EqualsAndHashCode(of = "id")
 public class Carrinho {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @SequenceGenerator(name = "carrinhos_seq", sequenceName = "carrinhos_seq", allocationSize = 1)
     @Column(name = "IDT_CARRINHO")
     private UUID id;
@@ -28,5 +29,11 @@ public class Carrinho {
     private LocalDateTime dataCriacao;
 
     private double valorTotal;
+
+    public Carrinho(CarrinhoDto carrinhoDto) {
+        this.listaItens = carrinhoDto.listaItens();
+        this.dataCriacao = carrinhoDto.dataCriacao();
+        this.valorTotal = carrinhoDto.valorTotal();
+    }
 
 }
