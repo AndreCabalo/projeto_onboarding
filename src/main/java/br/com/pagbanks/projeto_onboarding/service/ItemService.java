@@ -25,14 +25,10 @@ public class ItemService {
     @Transactional
     public Item update(Item item) {
       var itemOptional = itemRepository.findById(item.getId());
-
-
-
-
-
         return itemRepository.save(item);
     }
 
+    @Transactional
     public void delete(Long id) {
         Item item = findById(id);
         itemRepository.deleteById(id);
@@ -49,6 +45,12 @@ public class ItemService {
         } else {
             return itemOptional.get();
         }
+    }
+
+    public Item aumentaEstoque(Long id, int quantidade) {
+        Item item = findById(id);
+        item.setQuantidadeEstoque(item.getQuantidadeEstoque() + quantidade);
+        return itemRepository.save(item);
     }
 
 

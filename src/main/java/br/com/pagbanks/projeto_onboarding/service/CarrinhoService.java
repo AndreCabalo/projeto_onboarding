@@ -19,6 +19,9 @@ public class CarrinhoService {
     @Autowired
     private CarrinhoRepository carrinhoRepository;
 
+    @Autowired
+    private ItemService itemService;
+
     public Carrinho save(Carrinho carrinho) {
         return carrinhoRepository.save(carrinho);
     }
@@ -54,7 +57,8 @@ public class CarrinhoService {
         if (carrinho.getListaItens().contains(item)) {
             carrinho.getListaItens().remove(item);
             carrinho.setValorTotal((carrinho.getValorTotal()) - item.getPreco());
-            item.setQuantidadeEstoque(item.getQuantidadeEstoque() + 1);
+            itemService.aumentaEstoque(item.getId(), 1);
+//            item.setQuantidadeEstoque(item.getQuantidadeEstoque() + 1);
             return carrinhoRepository.save(carrinho);
         }else {
             throw new CarrinhoNotFoundException("Carrinho não encontrado, item não removido");
