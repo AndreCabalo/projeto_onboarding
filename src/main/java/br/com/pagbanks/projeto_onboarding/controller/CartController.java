@@ -1,8 +1,8 @@
 package br.com.pagbanks.projeto_onboarding.controller;
 
-import br.com.pagbanks.projeto_onboarding.dto.CarrinhoDto;
-import br.com.pagbanks.projeto_onboarding.entity.Carrinho;
-import br.com.pagbanks.projeto_onboarding.service.CarrinhoService;
+import br.com.pagbanks.projeto_onboarding.dto.CartDto;
+import br.com.pagbanks.projeto_onboarding.entity.Cart;
+import br.com.pagbanks.projeto_onboarding.service.CartService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,16 +12,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/carrinho")
-public class CarrinhoController {
+@RequestMapping("/cart")
+public class CartController {
 
     @Autowired
-    private CarrinhoService carrinhoService;
+    private CartService cartService;
 
 
     @PostMapping
     @Transactional
-    public void criarCarrinho(@RequestBody @Valid CarrinhoDto carrinhoDto) {
-        carrinhoService.save(new Carrinho(carrinhoDto));
+    public void createCart(@RequestBody @Valid CartDto cartDto) {
+        cartService.save(new Cart(cartDto));
     }
 }

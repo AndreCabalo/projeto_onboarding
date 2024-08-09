@@ -12,30 +12,21 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")
+@ToString
 public class Item {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @SequenceGenerator(name = "items_seq", sequenceName = "items_seq", allocationSize = 1)
     private Long id;
-    private String nome;
-    private double preco;
-    @Column(name = "quantidade_estoque")
-    private int quantidade;
+    private String name;
+    private double price;
+    private int amount;
 
     public Item(ItemDto itemDto) {
-        this.nome = itemDto.nome();
-        this.preco = itemDto.preco();
-        this.quantidade = itemDto.quantidade();
+        this.name = itemDto.name();
+        this.price = itemDto.price();
+        this.amount = itemDto.amount();
     }
 
-    @Override
-    public String toString() {
-        return "Item{" +
-                "id=" + id +
-                ", nome='" + nome + '\'' +
-                ", preco=" + preco +
-                ", quantidade=" + quantidade +
-                '}';
-    }
 }

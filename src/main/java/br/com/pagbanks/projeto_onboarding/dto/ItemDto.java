@@ -6,11 +6,11 @@ import jakarta.validation.constraints.NotBlank;
 
 public record ItemDto(
         Long id,
-        @NotBlank(message = "O nome não pode ser vazio")
-        String nome,
-        @DecimalMin(value = "0.0", inclusive = false, message = "O preço deve ser maior que zero")
-        double preco,
-        int quantidade
+        @NotBlank(message = "The name cannot be empty")
+        String name,
+        @DecimalMin(value = "0.0", inclusive = false, message = "The price cannot be zero")
+        double price,
+        int amount
 ) {
 }
 

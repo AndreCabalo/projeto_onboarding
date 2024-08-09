@@ -1,18 +1,17 @@
 package br.com.pagbanks.projeto_onboarding.dto;
 
 import br.com.pagbanks.projeto_onboarding.entity.Item;
-import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 
-public record CarrinhoDto(
+public record CartDto(
 
         Long id,
-        List<Item> listaItens,
-        LocalDateTime dataCriacao,
-        double valorTotal
+        List<Item> listItens,
+        LocalDateTime creationDate,
+        double totalValue
 
 ) {
 }
