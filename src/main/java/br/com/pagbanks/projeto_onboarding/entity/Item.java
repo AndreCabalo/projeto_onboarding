@@ -21,12 +21,12 @@ public class Item {
     private String nome;
     private double preco;
     @Column(name = "quantidade_estoque")
-    private int quantidadeEstoque;
+    private int quantidade;
 
 
     public Item(ItemDto itemDto) {
         this.nome = itemDto.nome();
         this.preco = itemDto.preco();
-        this.quantidadeEstoque = itemDto.quantidadeEstoque();
+        this.quantidade = itemDto.quantidade();
     }
 }

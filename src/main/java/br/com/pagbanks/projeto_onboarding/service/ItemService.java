@@ -49,7 +49,7 @@ public class ItemService {
 
     public Item aumentaEstoque(Long id, int quantidade) {
         Item item = findById(id);
-        item.setQuantidadeEstoque(item.getQuantidadeEstoque() + quantidade);
+        item.setQuantidade(item.getQuantidade() + quantidade);
         return itemRepository.save(item);
     }
 

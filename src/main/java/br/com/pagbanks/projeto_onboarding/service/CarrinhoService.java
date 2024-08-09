@@ -38,14 +38,14 @@ public class CarrinhoService {
     public Carrinho addItem(Long idCarrinho, Item item) {
         Carrinho carrinho = findById(idCarrinho);
 
-        if(item.getQuantidadeEstoque() <= 0) {
+        if(item.getQuantidade() <= 0) {
             throw new QuantidadeIndisponivelException("Quantidade insuficiente em estoque");
         }
         if (carrinho.getListaItens().contains(item)) {
             throw new ItemJaEstaNoCarrinhoException("Item já adicionado ao carrinho");
         }
-        item.setQuantidadeEstoque(item.getQuantidadeEstoque() - 1);
-        item.setQuantidadeEstoque(item.getQuantidadeEstoque() - 1);
+        item.setQuantidade(item.getQuantidade() - 1);
+        item.setQuantidade(item.getQuantidade() - 1);
         carrinho.getListaItens().add(item);
         carrinho.setValorTotal((carrinho.getValorTotal()) + item.getPreco());
 
