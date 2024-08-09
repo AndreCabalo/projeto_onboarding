@@ -23,7 +23,7 @@ public class CarrinhoService {
         return carrinhoRepository.save(carrinho);
     }
 
-    public Carrinho findById(UUID id) {
+    public Carrinho findById(Long id) {
         return carrinhoRepository.findById(id)
                 .orElseThrow(()->new CarrinhoNotFoundException("Carrinho não encontrado"));
     }
@@ -32,7 +32,7 @@ public class CarrinhoService {
         return carrinhoRepository.findAll();
     }
 
-    public Carrinho addItem(UUID idCarrinho, Item item) {
+    public Carrinho addItem(Long idCarrinho, Item item) {
         Carrinho carrinho = findById(idCarrinho);
 
         if(item.getQuantidadeEstoque() <= 0) {
@@ -49,7 +49,7 @@ public class CarrinhoService {
         return carrinhoRepository.save(carrinho);
     }
 
-    public Carrinho removeItem(UUID idCarrinho, Item item) {
+    public Carrinho removeItem(Long idCarrinho, Item item) {
         Carrinho carrinho = findById(idCarrinho);
         if (carrinho.getListaItens().contains(item)) {
             carrinho.getListaItens().remove(item);

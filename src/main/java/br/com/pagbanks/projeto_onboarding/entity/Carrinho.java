@@ -21,7 +21,7 @@ public class Carrinho {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @SequenceGenerator(name = "carrinhos_seq", sequenceName = "carrinhos_seq", allocationSize = 1)
     @Column(name = "IDT_CARRINHO")
-    private UUID id;
+    private Long id;
 
     @ManyToMany
     private List<Item> listaItens = new ArrayList<>();

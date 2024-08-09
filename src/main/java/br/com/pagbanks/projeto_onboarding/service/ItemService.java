@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 public class ItemService {
@@ -34,7 +33,7 @@ public class ItemService {
         return itemRepository.save(item);
     }
 
-    public void delete(UUID id) {
+    public void delete(Long id) {
         Item item = findById(id);
         itemRepository.deleteById(id);
     }
@@ -43,15 +42,13 @@ public class ItemService {
         return itemRepository.findAll();
     }
 
-    public Item findById(UUID id) {
+    public Item findById(Long id) {
         Optional<Item> itemOptional = itemRepository.findById(id);
         if (itemOptional.isPresent()) {
             throw new DataFoundException("Item não encontrado");
         } else {
             return itemOptional.get();
         }
-
-
     }
 
 

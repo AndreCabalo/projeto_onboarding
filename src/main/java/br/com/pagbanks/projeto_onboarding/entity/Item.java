@@ -4,8 +4,6 @@ import br.com.pagbanks.projeto_onboarding.dto.ItemDto;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.UUID;
-
 
 @Entity
 @Table(name = "items")
@@ -19,9 +17,10 @@ public class Item {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @SequenceGenerator(name = "items_seq", sequenceName = "items_seq", allocationSize = 1)
-    private UUID id;
+    private Long id;
     private String nome;
     private double preco;
+    @Column(name = "quantidade_estoque")
     private int quantidadeEstoque;
 
 
