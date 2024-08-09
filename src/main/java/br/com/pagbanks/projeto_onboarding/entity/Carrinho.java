@@ -20,14 +20,13 @@ public class Carrinho {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @SequenceGenerator(name = "carrinhos_seq", sequenceName = "carrinhos_seq", allocationSize = 1)
-    @Column(name = "IDT_CARRINHO")
     private Long id;
 
     @ManyToMany
     private List<Item> listaItens = new ArrayList<>();
-    @Column(name = "DAT_CREATION")
+    @Column(name = "data_criacao")
     private LocalDateTime dataCriacao;
-
+    @Column(name = "valor_total")
     private double valorTotal;
 
     public Carrinho(CarrinhoDto carrinhoDto) {

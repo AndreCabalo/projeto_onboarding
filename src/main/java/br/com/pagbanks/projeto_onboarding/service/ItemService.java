@@ -5,13 +5,16 @@ import br.com.pagbanks.projeto_onboarding.exceptions.DataFoundException;
 import br.com.pagbanks.projeto_onboarding.exceptions.QuantidadeIndisponivelException;
 import br.com.pagbanks.projeto_onboarding.repository.ItemRepository;
 import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
+
 @Service
+@Slf4j
 public class ItemService {
 
     @Autowired
@@ -19,6 +22,7 @@ public class ItemService {
 
     @Transactional
     public Item save(Item item) {
+        log.info("m= save,msg=salvando_item, item={}", item);
         return itemRepository.save(item);
     }
 

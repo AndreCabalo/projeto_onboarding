@@ -23,10 +23,19 @@ public class Item {
     @Column(name = "quantidade_estoque")
     private int quantidade;
 
-
     public Item(ItemDto itemDto) {
         this.nome = itemDto.nome();
         this.preco = itemDto.preco();
         this.quantidade = itemDto.quantidade();
+    }
+
+    @Override
+    public String toString() {
+        return "Item{" +
+                "id=" + id +
+                ", nome='" + nome + '\'' +
+                ", preco=" + preco +
+                ", quantidade=" + quantidade +
+                '}';
     }
 }
