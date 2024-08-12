@@ -31,9 +31,16 @@ public class ItemController {
         return itemService.findAll().stream().toList();
     }
 
+//    @PutMapping
+//    @Transactional
+//    public Item update(@RequestBody @Valid Item item){
+//        return itemService.update(item);
+//    }
+
     @PutMapping
+    @Transactional
     public Item update(@RequestBody @Valid Item item){
-        return itemService.update(item);
+        return itemService.update(item.getId(), item);
     }
 
 
@@ -45,12 +52,7 @@ public class ItemController {
 
     @GetMapping("/find/{itemId}")
     public ResponseEntity<Item> getItemById(@PathVariable Long itemId) {
-        Item item = itemService.findById(itemId);
-        if (item != null) {
-            return ResponseEntity.ok(item);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        return ResponseEntity.ok(itemService.findById((itemId)));
     }
 
 }

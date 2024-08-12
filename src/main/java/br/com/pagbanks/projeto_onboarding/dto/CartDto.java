@@ -11,7 +11,7 @@ public record CartDto(
         Long id,
         List<Item> listItens,
         LocalDateTime creationDate,
-        double totalValue
+        Double totalValue
 
 ) {
 }

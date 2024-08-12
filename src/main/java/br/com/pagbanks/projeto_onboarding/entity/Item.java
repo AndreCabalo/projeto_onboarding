@@ -20,13 +20,25 @@ public class Item {
     @SequenceGenerator(name = "items_seq", sequenceName = "items_seq", allocationSize = 1)
     private Long id;
     private String name;
-    private double price;
-    private int amount;
+    private Double price;
+    private Integer amount;
 
     public Item(ItemDto itemDto) {
         this.name = itemDto.name();
         this.price = itemDto.price();
         this.amount = itemDto.amount();
     }
+
+//    public void updateItem(Item item){
+//        if(item.getName() != null){
+//            this.name = item.getName();
+//        }
+//        if (item.getAmount() != null) {
+//            this.amount = item.getAmount();
+//        }
+//        if(item.getPrice() != null){
+//            this.price = item.getPrice();
+//        }
+//    }
 
 }

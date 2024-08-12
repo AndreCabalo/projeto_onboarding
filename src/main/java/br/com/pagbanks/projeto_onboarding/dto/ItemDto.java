@@ -9,8 +9,8 @@ public record ItemDto(
         @NotBlank(message = "The name cannot be empty")
         String name,
         @DecimalMin(value = "0.0", inclusive = false, message = "The price cannot be zero")
-        double price,
-        int amount
+        Double price,
+        Integer amount
 ) {
 }
 

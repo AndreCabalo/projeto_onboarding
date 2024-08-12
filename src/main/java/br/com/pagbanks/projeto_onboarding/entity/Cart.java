@@ -8,12 +8,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "carrinhos")
+@Table(name = "carts")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")
+@ToString
 public class Cart {
 
     @Id
@@ -21,11 +22,12 @@ public class Cart {
     @SequenceGenerator(name = "carts_seq", sequenceName = "carts_seq", allocationSize = 1)
     private Long id;
     @ManyToMany
+    @Column(name = "list_items")
     private List<Item> listItens = new ArrayList<>();
     @Column(name = "creation_date")
     private LocalDateTime creationDate;
     @Column(name = "total_value")
-    private double totalValue;
+    private Double totalValue;
 
     public Cart(CartDto cartDto) {
         this.listItens = cartDto.listItens();

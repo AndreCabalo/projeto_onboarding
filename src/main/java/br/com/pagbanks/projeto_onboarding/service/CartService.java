@@ -6,12 +6,15 @@ import br.com.pagbanks.projeto_onboarding.exceptions.CarrinhoNotFoundException;
 import br.com.pagbanks.projeto_onboarding.exceptions.ItemJaEstaNoCarrinhoException;
 import br.com.pagbanks.projeto_onboarding.exceptions.QuantidadeIndisponivelException;
 import br.com.pagbanks.projeto_onboarding.repository.CartRepository;
+import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@Slf4j
 public class CartService {
 
     @Autowired
@@ -20,7 +23,9 @@ public class CartService {
     @Autowired
     private ItemService itemService;
 
+    @Transactional
     public Cart save(Cart cart) {
+        log.info("m=save,msg=saving_cart, cart={}", cart);
         return cartRepository.save(cart);
     }
 

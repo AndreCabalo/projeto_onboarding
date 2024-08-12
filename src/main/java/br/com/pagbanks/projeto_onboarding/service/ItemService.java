@@ -31,15 +31,33 @@ public class ItemService {
         return itemRepository.findAll();
     }
 
+//    @Transactional
+//    public Item update(Item item) {
+//        log.info("m=update,msg=update_item, item={}", item);
+//        Optional<Item> optionalItem = itemRepository.findById(item.getId());
+//        if(optionalItem.isPresent()){
+//            return itemRepository.save(item);
+//        }else {
+//            throw new RuntimeException("Item not found!");
+//        }
+//    }
+
     @Transactional
-    public Item update(Item item) {
+    public Item update(Long id, Item item) {
         log.info("m=update,msg=update_item, item={}", item);
-        Optional<Item> optionalItem = itemRepository.findById(item.getId());
-        if(optionalItem.isPresent()){
-            return itemRepository.save(item);
-        }else {
-            throw new RuntimeException("Item not found!");
+
+        Item existingItem= itemRepository.findById(id).orElseThrow(() -> new RuntimeException("Item not found with id !" + id));
+
+        if(item.getName() != null){
+            existingItem.setName(item.getName());
         }
+        if(item.getAmount() != null){
+            existingItem.setAmount(item.getAmount());
+        }
+        if(item.getPrice() != null){
+            existingItem.setPrice(item.getPrice());
+        }
+        return itemRepository.save(existingItem);
     }
 
 
