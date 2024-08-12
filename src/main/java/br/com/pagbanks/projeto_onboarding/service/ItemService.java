@@ -25,33 +25,44 @@ public class ItemService {
         return itemRepository.save(item);
     }
 
-    @Transactional
-    public Item update(Item item) {
-        log.info("m=update,msg=update_item, item={}", item);
-      var itemOptional = itemRepository.findById(item.getId());
-        return itemRepository.save(item);
-    }
-
-    @Transactional
-    public void delete(Long id) {
-        Item item = findById(id);
-        log.info("m=delete,msg=deleting_item, item={}", item);
-        itemRepository.deleteById(id);
-    }
-
     public List<Item> findAll() {
         List<Item> listItems = itemRepository.findAll().stream().toList();
         log.info("m=findAll,msg=findingAll_items, items={}", listItems);
         return itemRepository.findAll();
     }
 
+    @Transactional
+    public Item update(Item item) {
+        log.info("m=update,msg=update_item, item={}", item);
+        Optional<Item> optionalItem = itemRepository.findById(item.getId());
+        if(optionalItem.isPresent()){
+            return itemRepository.save(item);
+        }else {
+            throw new RuntimeException("Item not found!");
+        }
+    }
+
+
+    @Transactional
+    public void delete(Long id) {
+        Optional<Item> optionalItem = itemRepository.findById(id);
+        if(optionalItem.isPresent()){
+         itemRepository.delete(optionalItem.get());
+        }else {
+            throw new RuntimeException("Item not found!");
+        }
+        log.info("m=delete,msg=deleting_item, item={}", itemRepository.findById(id));
+    }
+
+
+
     public Item findById(Long id) {
         Optional<Item> itemOptional = itemRepository.findById(id);
         log.info("m=findById,msg=findingById_item, item={}", itemOptional);
         if (itemOptional.isPresent()) {
-            throw new DataFoundException("Item não encontrado");
-        } else {
             return itemOptional.get();
+        } else {
+            throw new DataFoundException("Item não encontrado");
         }
     }
 

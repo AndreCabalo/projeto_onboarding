@@ -6,6 +6,7 @@ import br.com.pagbanks.projeto_onboarding.service.ItemService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,8 +21,8 @@ public class ItemController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @Transactional
-    public void saveItem(@RequestBody @Valid ItemDto itemDto) {
-        itemService.save(new Item(itemDto));
+    public Item saveItem(@RequestBody @Valid ItemDto itemDto) {
+        return itemService.save(new Item(itemDto));
     }
 
     @ResponseStatus(HttpStatus.OK)
@@ -30,6 +31,26 @@ public class ItemController {
         return itemService.findAll().stream().toList();
     }
 
+    @PutMapping
+    public Item update(@RequestBody @Valid Item item){
+        return itemService.update(item);
+    }
 
+
+    @DeleteMapping("delete/{itemId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable Long itemId){
+        itemService.delete(itemId);
+    }
+
+    @GetMapping("/find/{itemId}")
+    public ResponseEntity<Item> getItemById(@PathVariable Long itemId) {
+        Item item = itemService.findById(itemId);
+        if (item != null) {
+            return ResponseEntity.ok(item);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
 
 }
