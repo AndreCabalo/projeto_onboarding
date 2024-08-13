@@ -9,8 +9,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
-@RequestMapping("/cart")
+@RequestMapping("/carts")
 public class CartController {
 
     @Autowired
@@ -19,8 +21,14 @@ public class CartController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @Transactional
-    public void saveCart(@RequestBody @Valid CartDto cartDto) {
-        cartService.save(new Cart(cartDto));
+    public Cart saveCart(@RequestBody @Valid CartDto cartDto) {
+        return cartService.save(new Cart(cartDto));
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping
+        public List<Cart> list(){
+        return cartService.findAll().stream().toList();
     }
 
 

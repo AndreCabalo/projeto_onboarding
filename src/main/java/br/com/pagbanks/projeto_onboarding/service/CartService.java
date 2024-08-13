@@ -35,6 +35,8 @@ public class CartService {
     }
 
     public List<Cart> findAll() {
+        List<Cart> listCarts = cartRepository.findAll().stream().toList();
+        log.info("m=findAll,msg=findindAll_carts, carts={}",listCarts);
         return cartRepository.findAll();
     }
 

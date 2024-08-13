@@ -22,6 +22,7 @@ public class Item {
     private String name;
     private Double price;
     private Integer amount;
+    //seria preciso criar um atributo lista de carrinhos? para apontar quais estão com este item? pensando em @manytomany?
 
     public Item(ItemDto itemDto) {
         this.name = itemDto.name();
