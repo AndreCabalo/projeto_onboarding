@@ -18,6 +18,7 @@ public class ItemController {
 
     @Autowired
     private ItemService itemService;
+
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @Transactional
@@ -38,19 +39,22 @@ public class ItemController {
 //    }
 
     @PutMapping
+    @ResponseStatus(HttpStatus.OK)
     @Transactional
     public Item update(@RequestBody @Valid Item item){
         return itemService.update(item.getId(), item);
     }
 
 
-    @DeleteMapping("delete/{itemId}")
+    @DeleteMapping("/{itemId}")
+    @Transactional
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long itemId){
         itemService.delete(itemId);
     }
 
-    @GetMapping("/find/{itemId}")
+    @GetMapping("/{itemId}")
+    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Item> getItemById(@PathVariable Long itemId) {
         return ResponseEntity.ok(itemService.findById((itemId)));
     }
