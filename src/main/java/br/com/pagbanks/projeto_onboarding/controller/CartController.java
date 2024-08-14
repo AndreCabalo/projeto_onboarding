@@ -23,7 +23,7 @@ public class CartController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @Transactional
-    public Cart saveCart(@RequestBody @Valid CartDto cartDto) {
+    public Cart saveCart(@RequestBody CartDto cartDto) {
         return cartService.save(new Cart(cartDto));
     }
 

@@ -7,7 +7,6 @@ import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -30,17 +29,6 @@ public class ItemService {
         log.info("m=findAll,msg=findingAll_items, items={}", listItems);
         return itemRepository.findAll();
     }
-
-//    @Transactional
-//    public Item update(Item item) {
-//        log.info("m=update,msg=update_item, item={}", item);
-//        Optional<Item> optionalItem = itemRepository.findById(item.getId());
-//        if(optionalItem.isPresent()){
-//            return itemRepository.save(item);
-//        }else {
-//            throw new RuntimeException("Item not found!");
-//        }
-//    }
 
     @Transactional
     public Item update(Long id, Item item) {
@@ -73,8 +61,6 @@ public class ItemService {
 
     }
 
-
-
     public Item findById(Long id) {
         Optional<Item> itemOptional = itemRepository.findById(id);
         log.info("m=findById,msg=findingById_item, item={}", itemOptional);
@@ -85,6 +71,7 @@ public class ItemService {
         }
     }
 
+    @Transactional
     public Item addAmount(Long id, int amount) {
         Item item = findById(id);
         item.setAmount(item.getAmount() + amount);

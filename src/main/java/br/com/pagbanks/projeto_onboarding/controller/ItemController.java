@@ -41,6 +41,7 @@ public class ItemController {
 
     @PutMapping("/add/{itemId}/{amount}")
     @ResponseStatus(HttpStatus.OK)
+    @Transactional
     public Item addAmount(@PathVariable Long itemId, @PathVariable int amount){
         return itemService.addAmount(itemId,amount);
     }
@@ -57,10 +58,5 @@ public class ItemController {
     public ResponseEntity<Item> getItemById(@PathVariable Long itemId) {
         return ResponseEntity.ok(itemService.findById((itemId)));
     }
-
-
-
-
-
 
 }

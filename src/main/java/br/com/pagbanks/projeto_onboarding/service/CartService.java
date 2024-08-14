@@ -47,6 +47,7 @@ public class CartService {
         return cartRepository.findAll();
     }
 
+    @Transactional
     public Cart addItem(Long idCart, Long idItem) {
         Cart cart = findById(idCart);
         Item item = itemService.findById(idItem);
