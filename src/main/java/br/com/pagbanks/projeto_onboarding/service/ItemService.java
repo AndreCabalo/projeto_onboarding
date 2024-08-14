@@ -66,10 +66,11 @@ public class ItemService {
         Optional<Item> optionalItem = itemRepository.findById(id);
         if(optionalItem.isPresent()){
          itemRepository.delete(optionalItem.get());
+         log.info("m=delete,msg=deleting_item, item={}", itemRepository.findById(id));
         }else {
             throw new RuntimeException("Item not found!");
         }
-        log.info("m=delete,msg=deleting_item, item={}", itemRepository.findById(id));
+
     }
 
 
@@ -80,11 +81,11 @@ public class ItemService {
         if (itemOptional.isPresent()) {
             return itemOptional.get();
         } else {
-            throw new DataFoundException("Item não encontrado");
+            throw new DataFoundException("Item id not found!");
         }
     }
 
-    public Item aumentaEstoque(Long id, int amount) {
+    public Item addAmount(Long id, int amount) {
         Item item = findById(id);
         item.setAmount(item.getAmount() + amount);
         return itemRepository.save(item);

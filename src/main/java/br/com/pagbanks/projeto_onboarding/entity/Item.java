@@ -1,6 +1,8 @@
 package br.com.pagbanks.projeto_onboarding.entity;
 
 import br.com.pagbanks.projeto_onboarding.dto.ItemDto;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -15,7 +17,6 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")
-@ToString
 public class Item {
 
     @Id
@@ -26,6 +27,7 @@ public class Item {
     private Double price;
     private Integer amount;
     @ManyToMany(mappedBy = "listItens")
+    @JsonIgnore
     private List<Cart> carts = new ArrayList<>();
 
     public Item(ItemDto itemDto) {
@@ -34,16 +36,14 @@ public class Item {
         this.amount = itemDto.amount();
     }
 
-//    public void updateItem(Item item){
-//        if(item.getName() != null){
-//            this.name = item.getName();
-//        }
-//        if (item.getAmount() != null) {
-//            this.amount = item.getAmount();
-//        }
-//        if(item.getPrice() != null){
-//            this.price = item.getPrice();
-//        }
-//    }
 
+    @Override
+    public String toString() {
+        return "Item{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", price=" + price +
+                ", amount=" + amount +
+                '}';
+    }
 }

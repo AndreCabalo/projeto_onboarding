@@ -32,12 +32,6 @@ public class ItemController {
         return itemService.findAll().stream().toList();
     }
 
-//    @PutMapping
-//    @Transactional
-//    public Item update(@RequestBody @Valid Item item){
-//        return itemService.update(item);
-//    }
-
     @PutMapping
     @ResponseStatus(HttpStatus.OK)
     @Transactional
@@ -45,6 +39,11 @@ public class ItemController {
         return itemService.update(item.getId(), item);
     }
 
+    @PutMapping("/add/{itemId}/{amount}")
+    @ResponseStatus(HttpStatus.OK)
+    public Item addAmount(@PathVariable Long itemId, @PathVariable int amount){
+        return itemService.addAmount(itemId,amount);
+    }
 
     @DeleteMapping("/{itemId}")
     @Transactional
@@ -58,5 +57,10 @@ public class ItemController {
     public ResponseEntity<Item> getItemById(@PathVariable Long itemId) {
         return ResponseEntity.ok(itemService.findById((itemId)));
     }
+
+
+
+
+
 
 }
