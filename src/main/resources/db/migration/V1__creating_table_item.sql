@@ -7,3 +7,23 @@ CREATE TABLE items (
 
 );
 
+CREATE TABLE carts (
+    id BIGINT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+        creation_date DATE,
+        total_value DECIMAL(10,2)
+);
+
+CREATE TABLE carts_items (
+    cart_id BIGINT NOT NULL,
+    item_id BIGINT NOT NULL,
+    PRIMARY KEY (cart_id, item_id),
+    CONSTRAINT fk_cart
+        FOREIGN KEY (cart_id)
+        REFERENCES carts (id)
+        ON DELETE CASCADE,
+    CONSTRAINT fk_item
+        FOREIGN KEY (item_id)
+        REFERENCES items (id)
+        ON DELETE CASCADE
+);
+

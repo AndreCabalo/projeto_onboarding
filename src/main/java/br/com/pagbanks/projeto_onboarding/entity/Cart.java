@@ -1,15 +1,13 @@
 package br.com.pagbanks.projeto_onboarding.entity;
 
 import br.com.pagbanks.projeto_onboarding.dto.CartDto;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
-
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Entity
 @Table(name = "carts")
@@ -26,10 +24,11 @@ public class Cart {
     @SequenceGenerator(name = "carts_seq", sequenceName = "carts_seq", allocationSize = 1)
     private Long id;
     @ManyToMany
+    @JoinTable(name = "carts_items",joinColumns = @JoinColumn(name = "cart_id"), inverseJoinColumns = @JoinColumn(name = "item_id"))
     @Column(name = "list_items")
+    @JsonIgnoreProperties("carts")
     @JsonProperty("list_items")
-    //poderia ser Set<Item>?
-    private List<Item> listItens = new ArrayList<>();
+    private Set<Item> listItens;
     @Column(name = "creation_date")
     @JsonProperty("creation_date")
     private LocalDate creationDate;
@@ -38,7 +37,8 @@ public class Cart {
     private Double totalValue = 0.0;
 
     public Cart(CartDto cartDto) {
-        this.listItens = cartDto.listItens() != null ? cartDto.listItens() : new ArrayList<>();
+//      this.listItens = cartDto.listItens() != null ? cartDto.listItens() : new HashSet<Item>();
+        this.listItens = cartDto.listItens();
         this.creationDate = cartDto.creationDate() != null ? cartDto.creationDate() : LocalDate.now();
         this.totalValue = cartDto.totalValue() != null ? cartDto.totalValue() : 0.0;
     }

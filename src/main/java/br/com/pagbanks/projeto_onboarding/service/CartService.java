@@ -20,8 +20,8 @@ public class CartService {
     @Autowired
     private CartRepository cartRepository;
 
-    @Autowired
-    private ItemService itemService;
+//    @Autowired
+//    private ItemService itemService;
 
     @Transactional
     public Cart save(Cart cart) {
@@ -35,8 +35,8 @@ public class CartService {
     }
 
     public List<Cart> findAll() {
-        List<Cart> listCarts = cartRepository.findAll().stream().toList();
-        log.info("m=findAll,msg=findindAll_carts, carts={}",listCarts);
+//        List<Cart> listCarts = cartRepository.findAll().stream().toList();
+//        log.info("m=findAll,msg=findindAll_carts, carts={}",listCarts);
         return cartRepository.findAll();
     }
 
@@ -57,17 +57,17 @@ public class CartService {
         return cartRepository.save(cart);
     }
 
-    public Cart removeItem(Long idCart, Item item) {
-        Cart cart = findById(idCart);
-        if (cart.getListItens().contains(item)) {
-            cart.getListItens().remove(item);
-            cart.setTotalValue((cart.getTotalValue()) - item.getPrice());
-            itemService.aumentaEstoque(item.getId(), 1);
-            return cartRepository.save(cart);
-        }else {
-            throw new CarrinhoNotFoundException("Item not found in cart");
-        }
-    }
+//    public Cart removeItem(Long idCart, Item item) {
+//        Cart cart = findById(idCart);
+//        if (cart.getListItens().contains(item)) {
+//            cart.getListItens().remove(item);
+//            cart.setTotalValue((cart.getTotalValue()) - item.getPrice());
+//            itemService.aumentaEstoque(item.getId(), 1);
+//            return cartRepository.save(cart);
+//        }else {
+//            throw new CarrinhoNotFoundException("Item not found in cart");
+//        }
+//    }
 
 
 }

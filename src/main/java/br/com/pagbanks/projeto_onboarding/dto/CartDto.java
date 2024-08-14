@@ -4,14 +4,14 @@ import br.com.pagbanks.projeto_onboarding.entity.Item;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.time.LocalDate;
-import java.util.List;
+import java.util.Set;
 
 
 public record CartDto(
 
         Long id,
-        @JsonProperty("list_itens")
-        List<Item> listItens,
+        @JsonProperty("list_items")
+        Set<Item> listItens,
         @JsonProperty("creation_date")
         LocalDate creationDate,
         @JsonProperty("total_value")

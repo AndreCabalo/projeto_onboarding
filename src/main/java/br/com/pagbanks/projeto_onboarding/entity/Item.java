@@ -4,6 +4,9 @@ import br.com.pagbanks.projeto_onboarding.dto.ItemDto;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 @Entity
 @Table(name = "items")
@@ -22,7 +25,8 @@ public class Item {
     private String name;
     private Double price;
     private Integer amount;
-    //seria preciso criar um atributo lista de carrinhos? para apontar quais estão com este item? pensando em @manytomany?
+    @ManyToMany(mappedBy = "listItens")
+    private List<Cart> carts = new ArrayList<>();
 
     public Item(ItemDto itemDto) {
         this.name = itemDto.name();
