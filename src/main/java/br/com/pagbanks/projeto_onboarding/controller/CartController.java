@@ -35,20 +35,17 @@ public class CartController {
     }
 
     @GetMapping("/{cartId}")
-    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Cart> getCartById(@PathVariable Long cartId){
         return ResponseEntity.ok(cartService.findById(cartId));
     }
 
     @DeleteMapping("/{cartId}")
     @Transactional
-    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long cartId){
         cartService.delete(cartId);
     }
 
     @PutMapping("/{cartId}/remove/{itemId}")
-    @ResponseStatus(HttpStatus.OK)
     @Transactional
     public ResponseEntity<Cart> removeItemFromCart(@PathVariable Long cartId, @PathVariable Long itemId){
         Cart updateCart = cartService.removeItem(cartId,itemId);
@@ -56,9 +53,8 @@ public class CartController {
     }
 
     @PutMapping("/{cartId}/add/{itemId}")
-    @ResponseStatus(HttpStatus.OK)
     @Transactional
-    public ResponseEntity<Cart> admItemFromCart(@PathVariable Long cartId, @PathVariable Long itemId){
+    public ResponseEntity<Cart> addItemFromCart(@PathVariable Long cartId, @PathVariable Long itemId){
         Cart updateCart = cartService.addItem(cartId,itemId);
         return ResponseEntity.ok(updateCart);
     }

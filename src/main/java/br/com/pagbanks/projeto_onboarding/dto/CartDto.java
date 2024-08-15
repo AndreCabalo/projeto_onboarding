@@ -1,5 +1,6 @@
 package br.com.pagbanks.projeto_onboarding.dto;
 
+import br.com.pagbanks.projeto_onboarding.entity.Cart;
 import br.com.pagbanks.projeto_onboarding.entity.Item;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -26,5 +27,9 @@ public record CartDto(
                 if (totalValue == null) {
                         totalValue = 0.0;
                 }
+        }
+
+        public CartDto(Cart cart){
+                this(cart.getId(),cart.getListItens(),cart.getCreationDate(),cart.getTotalValue());
         }
 }

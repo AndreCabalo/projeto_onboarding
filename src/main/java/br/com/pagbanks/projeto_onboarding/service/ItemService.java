@@ -1,7 +1,7 @@
 package br.com.pagbanks.projeto_onboarding.service;
 
 import br.com.pagbanks.projeto_onboarding.entity.Item;
-import br.com.pagbanks.projeto_onboarding.exceptions.DataFoundException;
+import br.com.pagbanks.projeto_onboarding.exceptions.ResourceNotFoundException;
 import br.com.pagbanks.projeto_onboarding.repository.ItemRepository;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
@@ -34,7 +34,7 @@ public class ItemService {
     public Item update(Long id, Item item) {
         log.info("m=update,msg=update_item, item={}", item);
 
-        Item existingItem= itemRepository.findById(id).orElseThrow(() -> new RuntimeException("Item not found with id !" + id));
+        Item existingItem= itemRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Item not found with id : " + id));
 
         if(item.getName() != null){
             existingItem.setName(item.getName());
@@ -56,9 +56,8 @@ public class ItemService {
          itemRepository.delete(optionalItem.get());
          log.info("m=delete,msg=deleting_item, item={}", itemRepository.findById(id));
         }else {
-            throw new RuntimeException("Item not found!");
+            throw new ResourceNotFoundException("Item not deleted, because item id not found !");
         }
-
     }
 
     public Item findById(Long id) {
@@ -67,16 +66,17 @@ public class ItemService {
         if (itemOptional.isPresent()) {
             return itemOptional.get();
         } else {
-            throw new DataFoundException("Item id not found!");
+            throw new ResourceNotFoundException("Item id not found, with id = " + id);
         }
     }
 
     @Transactional
     public Item addAmount(Long id, int amount) {
-        Item item = findById(id);
-        item.setAmount(item.getAmount() + amount);
-        return itemRepository.save(item);
+        log.info("m=addAmount,msg=addAmount_item, itemId={}, amount{}",id,amount);
+        Item item = itemRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Item id not found, with id = " + id));
+
+            item.setAmount(item.getAmount() + amount);
+            return itemRepository.save(item);
     }
-
-
 }

@@ -2,10 +2,8 @@ package br.com.pagbanks.projeto_onboarding.service;
 
 import br.com.pagbanks.projeto_onboarding.entity.Cart;
 import br.com.pagbanks.projeto_onboarding.entity.Item;
-import br.com.pagbanks.projeto_onboarding.exceptions.CarrinhoNotFoundException;
-import br.com.pagbanks.projeto_onboarding.exceptions.DataFoundException;
-import br.com.pagbanks.projeto_onboarding.exceptions.ItemJaEstaNoCarrinhoException;
-import br.com.pagbanks.projeto_onboarding.exceptions.QuantidadeIndisponivelException;
+import br.com.pagbanks.projeto_onboarding.exceptions.ItemAlreadyAddedException;
+import br.com.pagbanks.projeto_onboarding.exceptions.ResourceNotFoundException;
 import br.com.pagbanks.projeto_onboarding.repository.CartRepository;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
@@ -37,7 +35,7 @@ public class CartService {
         if (cartOptional.isPresent()){
             return cartOptional.get();
         } else {
-            throw new DataFoundException("Cart id not found!");
+            throw new ResourceNotFoundException("Cart id not found!");
         }
     }
 
@@ -52,10 +50,10 @@ public class CartService {
         Cart cart = findById(idCart);
         Item item = itemService.findById(idItem);
         if(item.getAmount() <= 0) {
-            throw new QuantidadeIndisponivelException("Insufficiente quantity in stock");
+            throw new ResourceNotFoundException("Insufficiente quantity in stock");
         }else{
             if (cart.getListItens().contains(item)) {
-                throw new ItemJaEstaNoCarrinhoException("Item already added to cart");
+                throw new ItemAlreadyAddedException("Item already added to cart");
             }else {
                 item.setAmount(item.getAmount() - 1);
                 item.setAmount(item.getAmount() - 1);
@@ -76,7 +74,7 @@ public class CartService {
             itemService.addAmount(item.getId(), 1);
             return cartRepository.save(cart);
         }else {
-            throw new CarrinhoNotFoundException("Item not found in cart");
+            throw new ResourceNotFoundException("Cannot remove item, because: Item not found in cart");
         }
     }
 
@@ -86,7 +84,7 @@ public class CartService {
         if(optionalCart.isPresent()){
             cartRepository.delete(optionalCart.get());
         }else {
-            throw new RuntimeException("Cart not found!");
+            throw new ResourceNotFoundException("Cannot delete cart, because: Cart id not found");
         }
     }
 
