@@ -35,8 +35,8 @@ public class ItemController {
     @PutMapping
     @ResponseStatus(HttpStatus.OK)
     @Transactional
-    public Item update(@RequestBody @Valid Item item){
-        return itemService.update(item.getId(), item);
+    public Item update(@RequestBody @Valid ItemDto itemdto){
+        return itemService.update(itemdto.id(), new Item(itemdto));
     }
 
     @PutMapping("/add/{itemId}/{amount}")
