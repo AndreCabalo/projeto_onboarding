@@ -1,8 +1,8 @@
 package br.com.pagbanks.projeto_onboarding.exceptions;
-
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -20,5 +20,17 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public String handleItemAlreadyAddedException(ItemAlreadyAddedException e) {
         return e.getMessage();
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity handleValidException(MethodArgumentNotValidException e){
+        var erros = e.getFieldErrors();
+        return ResponseEntity.badRequest().body(erros.stream().map(DataErroValid:: new).toList());
+    }
+
+    private record DataErroValid(String field, String message){
+        public DataErroValid(FieldError erro){
+            this(erro.getField(),erro.getDefaultMessage());
+        }
     }
 }
