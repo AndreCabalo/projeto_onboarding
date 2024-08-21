@@ -9,7 +9,4 @@ public class ProjetoOnboardingApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(ProjetoOnboardingApplication.class, args);
 	}
-
-
-
 }

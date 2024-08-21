@@ -56,9 +56,9 @@ public class CartService {
                 throw new ItemAlreadyAddedException("Item already added to cart");
             }else {
                 item.setAmount(item.getAmount() - 1);
-                item.setAmount(item.getAmount() - 1);
                 cart.getListItens().add(item);
                 cart.setTotalValue((cart.getTotalValue()) + item.getPrice());
+                log.info("m=addItem,msg=addItem_carts, cart={} item={}",cart,item);
                 return cartRepository.save(cart);
             }
         }
@@ -71,6 +71,7 @@ public class CartService {
         if (cart.getListItens().contains(item)) {
             cart.getListItens().remove(item);
             cart.setTotalValue((cart.getTotalValue()) - item.getPrice());
+            log.info("m=removeItem,msg=removeItem_carts, cart={} item={}",cart,item);
             itemService.addAmount(item.getId(), 1);
             return cartRepository.save(cart);
         }else {
