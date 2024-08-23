@@ -37,3 +37,8 @@ dependencies {
 tasks.named('test') {
 	useJUnitPlatform()
 }
+
+// Enable parameter names at runtime
+tasks.withType(JavaCompile) {
+	options.compilerArgs << '-parameters'
+}
