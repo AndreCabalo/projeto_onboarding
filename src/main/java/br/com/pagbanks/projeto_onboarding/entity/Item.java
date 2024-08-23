@@ -30,12 +30,16 @@ public class Item {
     @JsonIgnore
     private List<Cart> carts = new ArrayList<>();
 
-    public Item(ItemDto itemDto) {
-        this.name = itemDto.name();
-        this.price = itemDto.price();
-        this.amount = itemDto.amount();
+    public Item(Long id, String name, Double price, Integer amount) {
+        this.id = id;
+        this.name = name;
+        this.price = price;
+        this.amount = amount;
     }
 
+//    public static Item from(ItemDto itemDto) {
+//        return new Item(itemDto.id(), itemDto.name(), itemDto.price(), itemDto.amount());
+//    }
 
     @Override
     public String toString() {

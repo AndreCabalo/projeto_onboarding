@@ -25,9 +25,9 @@ public class ItemService {
     }
 
     public List<Item> findAll() {
-        List<Item> listItems = itemRepository.findAll().stream().toList();
+        List<Item> listItems = itemRepository.findAll();
         log.info("m=findAll,msg=findingAll_items, items={}", listItems);
-        return itemRepository.findAll();
+        return listItems;
     }
 
     @Transactional

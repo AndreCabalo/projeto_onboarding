@@ -2,6 +2,8 @@ package br.com.pagbanks.projeto_onboarding.controller;
 
 import br.com.pagbanks.projeto_onboarding.dto.ItemDto;
 import br.com.pagbanks.projeto_onboarding.entity.Item;
+import br.com.pagbanks.projeto_onboarding.mapper.ItemMapper;
+import br.com.pagbanks.projeto_onboarding.repository.ItemRepository;
 import br.com.pagbanks.projeto_onboarding.service.ItemService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,43 +22,38 @@ public class ItemController {
     private ItemService itemService;
 
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    @Transactional
-    public Item saveItem(@RequestBody @Valid ItemDto itemDto) {
-        return itemService.save(new Item(itemDto));
+    public ResponseEntity<Item> saveItem(@RequestBody @Valid ItemDto itemDto) {
+        var item = itemService.save(ItemMapper.toItemFrom(itemDto));
+        return ResponseEntity.status(HttpStatus.CREATED).body(item);
     }
 
-    @ResponseStatus(HttpStatus.OK)
     @GetMapping
-    public List<Item> list(){
-        return itemService.findAll().stream().toList();
+    public ResponseEntity<List<Item>> list(){
+        return ResponseEntity.ok(itemService.findAll());
     }
 
     @PutMapping
-    @ResponseStatus(HttpStatus.OK)
-    @Transactional
-    public Item update(@RequestBody @Valid ItemDto itemdto){
-        return itemService.update(itemdto.id(), new Item(itemdto));
+    public ResponseEntity<Item> update(@RequestBody @Valid ItemDto itemdto){
+        var item = itemService.update(itemdto.id(), ItemMapper.toItemFrom(itemdto));
+        return ResponseEntity.ok(item);
     }
 
     @PutMapping("/add/{itemId}/{amount}")
-    @ResponseStatus(HttpStatus.OK)
-    @Transactional
-    public Item addAmount(@PathVariable Long itemId, @PathVariable int amount){
-        return itemService.addAmount(itemId,amount);
+    public ResponseEntity<Item> addAmount(@PathVariable Long itemId, @PathVariable int amount){
+        var item = itemService.addAmount(itemId, amount);
+        return ResponseEntity.ok(item);
     }
 
     @DeleteMapping("/{itemId}")
-    @Transactional
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable Long itemId){
-        itemService.delete(itemId);
+    public ResponseEntity<Void> delete(@PathVariable Long itemId){
+         itemService.delete(itemId);
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/{itemId}")
-    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Item> getItemById(@PathVariable Long itemId) {
-        return ResponseEntity.ok(itemService.findById((itemId)));
+        Item item = itemService.findById(itemId);
+        return ResponseEntity.ok(item);
     }
 
 }

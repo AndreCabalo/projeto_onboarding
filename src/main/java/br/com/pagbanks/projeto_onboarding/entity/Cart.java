@@ -6,6 +6,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
+
 import java.time.LocalDate;
 import java.util.*;
 
@@ -16,7 +18,6 @@ import java.util.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")
-@ToString
 public class Cart {
 
     @Id
@@ -25,10 +26,10 @@ public class Cart {
     private Long id;
     @ManyToMany
     @JoinTable(name = "carts_items",joinColumns = @JoinColumn(name = "cart_id"), inverseJoinColumns = @JoinColumn(name = "item_id"))
-    @Column(name = "list_items")
     @JsonIgnoreProperties("carts")
     @JsonProperty("list_items")
     private Set<Item> listItens;
+    @CreatedDate
     @Column(name = "creation_date")
     @JsonProperty("creation_date")
     private LocalDate creationDate;
@@ -36,20 +37,24 @@ public class Cart {
     @JsonProperty("total_value")
     private Double totalValue = 0.0;
 
-    public Cart(CartDto cartDto) {
-//      this.listItens = cartDto.listItens() != null ? cartDto.listItens() : new HashSet<Item>();
-        this.listItens = cartDto.listItens();
-        this.creationDate = cartDto.creationDate() != null ? cartDto.creationDate() : LocalDate.now();
-        this.totalValue = cartDto.totalValue() != null ? cartDto.totalValue() : 0.0;
-    }
-
-//    @PostLoad
-//    @PostPersist
-//    @PostUpdate
-//    private void ensureCreationDate(){
-//        if(this.creationDate == null) {
-//            this.creationDate = LocalDate.now();
-//        }
+//    public Cart(CartDto cartDto) {
+////      this.listItens = cartDto.listItens() != null ? cartDto.listItens() : new HashSet<Item>();
+//        this.listItens = cartDto.listItens();
+//        this.creationDate = cartDto.creationDate() != null ? cartDto.creationDate() : LocalDate.now();
+//        this.totalValue = cartDto.totalValue() != null ? cartDto.totalValue() : 0.0;
 //    }
 
+//    public static Cart from(CartDto cartDto) {
+//        return new Cart(cartDto.id(), cartDto.listItens(), cartDto.creationDate(), cartDto.totalValue());
+//    }
+
+    @Override
+    public String toString() {
+        return "Cart{" +
+                "id=" + id +
+                ", listItens=" + listItens +
+                ", creationDate=" + creationDate +
+                ", totalValue=" + totalValue +
+                '}';
+    }
 }

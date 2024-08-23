@@ -29,6 +29,7 @@ public class CartService {
         return cartRepository.save(cart);
     }
 
+    @Transactional
     public Cart findById(Long id) {
         Optional<Cart> cartOptional = cartRepository.findById(id);
         log.info("m=findById,msg=findById_carts, carts={}",cartOptional);
@@ -39,10 +40,11 @@ public class CartService {
         }
     }
 
+
     public List<Cart> findAll() {
-        List<Cart> listCarts = cartRepository.findAll().stream().toList();
+        List<Cart> listCarts = cartRepository.findAll();
         log.info("m=findAll,msg=findindAll_carts, carts={}",listCarts);
-        return cartRepository.findAll();
+        return listCarts;
     }
 
     @Transactional
