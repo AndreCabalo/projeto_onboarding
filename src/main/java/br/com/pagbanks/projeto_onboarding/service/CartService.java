@@ -9,7 +9,6 @@ import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -25,14 +24,14 @@ public class CartService {
 
     @Transactional
     public Cart save(Cart cart) {
-        log.info("m=save,msg=saving_cart, cart={}", cart);
+        log.info("m=save, msg=saving_cart, cart={}", cart);
         return cartRepository.save(cart);
     }
 
     @Transactional
     public Cart findById(Long id) {
         Optional<Cart> cartOptional = cartRepository.findById(id);
-        log.info("m=findById,msg=findById_carts, carts={}",cartOptional);
+        log.info("m=findById, msg=findById_carts, carts={}",cartOptional);
         if (cartOptional.isPresent()){
             return cartOptional.get();
         } else {
@@ -40,10 +39,9 @@ public class CartService {
         }
     }
 
-
     public List<Cart> findAll() {
         List<Cart> listCarts = cartRepository.findAll();
-        log.info("m=findAll,msg=findindAll_carts, carts={}",listCarts);
+        log.info("m=findAll, msg=findindAll_carts, carts={}",listCarts);
         return listCarts;
     }
 
@@ -60,20 +58,21 @@ public class CartService {
                 item.setAmount(item.getAmount() - 1);
                 cart.getListItens().add(item);
                 cart.setTotalValue((cart.getTotalValue()) + item.getPrice());
-                log.info("m=addItem,msg=addItem_carts, cart={} item={}",cart,item);
+                log.info("m=addItem, msg=addItem_carts, cart={} item={}",cart,item);
                 return cartRepository.save(cart);
             }
         }
     }
 
-    @Transactional
+        @Transactional
     public Cart removeItem(Long idCart, Long idItem) {
         Cart cart = findById(idCart);
         Item item = itemService.findById(idItem);
         if (cart.getListItens().contains(item)) {
-            cart.getListItens().remove(item);
+            Item cartItem = cart.getListItens().stream().filter(i -> i.getId().equals(idItem)).findFirst().get();
+            cart.getListItens().remove(cartItem);
             cart.setTotalValue((cart.getTotalValue()) - item.getPrice());
-            log.info("m=removeItem,msg=removeItem_carts, cart={} item={}",cart,item);
+            log.info("m=removeItem, msg=removeItem_carts, cart={} item={}",cart,item);
             itemService.addAmount(item.getId(), 1);
             return cartRepository.save(cart);
         }else {

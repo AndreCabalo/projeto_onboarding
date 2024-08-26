@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
-
 @Service
 @Slf4j
 public class ItemService {
@@ -20,19 +19,19 @@ public class ItemService {
 
     @Transactional
     public Item save(Item item) {
-        log.info("m=save,msg=saving_item, item={}", item);
+        log.info("m=save, msg=saving_item, item={}", item);
         return itemRepository.save(item);
     }
 
     public List<Item> findAll() {
         List<Item> listItems = itemRepository.findAll();
-        log.info("m=findAll,msg=findingAll_items, items={}", listItems);
+        log.info("m=findAll, msg=findingAll_items, items={}", listItems);
         return listItems;
     }
 
     @Transactional
     public Item update(Long id, Item item) {
-        log.info("m=update,msg=update_item, item={}", item);
+        log.info("m=update, msg=update_item, item={}", item);
 
         Item existingItem= itemRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Item not found with id : " + id));
 
@@ -48,13 +47,12 @@ public class ItemService {
         return itemRepository.save(existingItem);
     }
 
-
     @Transactional
     public void delete(Long id) {
         Optional<Item> optionalItem = itemRepository.findById(id);
         if(optionalItem.isPresent()){
-         itemRepository.delete(optionalItem.get());
-         log.info("m=delete,msg=deleting_item, item={}", itemRepository.findById(id));
+            itemRepository.delete(optionalItem.get());
+            log.info("m=delete, msg=deleting_item, item={}", itemRepository.findById(id));
         }else {
             throw new ResourceNotFoundException("Item not deleted, because item id not found !");
         }
@@ -62,7 +60,7 @@ public class ItemService {
 
     public Item findById(Long id) {
         Optional<Item> itemOptional = itemRepository.findById(id);
-        log.info("m=findById,msg=findingById_item, item={}", itemOptional);
+        log.info("m=findById, msg=findingById_item, item={}", itemOptional);
         if (itemOptional.isPresent()) {
             return itemOptional.get();
         } else {
@@ -72,11 +70,11 @@ public class ItemService {
 
     @Transactional
     public Item addAmount(Long id, int amount) {
-        log.info("m=addAmount,msg=addAmount_item, itemId={}, amount{}",id,amount);
+        log.info("m=addAmount, msg=addAmount_item, itemId={}, amount{}",id,amount);
         Item item = itemRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Item id not found, with id = " + id));
 
-            item.setAmount(item.getAmount() + amount);
-            return itemRepository.save(item);
+        item.setAmount(item.getAmount() + amount);
+        return itemRepository.save(item);
     }
 }
