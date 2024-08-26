@@ -59,7 +59,8 @@ class ItemServiceTest {
         for (Item item : itemList) {
             itemService.delete(item.getId());
         }
-        assertThat(itemList.size()).isZero();
+        itemList = itemService.findAll();
+        assertThat(itemList.size()).isEqualTo(0);
     }
 
     @Test
