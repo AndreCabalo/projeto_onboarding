@@ -4,7 +4,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.List;
@@ -23,14 +22,14 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<List<DataErroValid>> handleValidException(MethodArgumentNotValidException e){
+    private ResponseEntity<List<DataErrorValid>> handleValidException(MethodArgumentNotValidException e){
         var errors = e.getFieldErrors();
-        List<DataErroValid> erroList = errors.stream().map(DataErroValid::new).toList();
+        List<DataErrorValid> erroList = errors.stream().map(DataErrorValid::new).toList();
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(erroList);
     }
 
-    private record DataErroValid(String field, String message){
-        public DataErroValid(FieldError errors){
+    private record DataErrorValid(String field, String message){
+        public DataErrorValid(FieldError errors){
             this(errors.getField(),errors.getDefaultMessage());
         }
     }

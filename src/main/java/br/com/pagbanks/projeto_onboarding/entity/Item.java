@@ -1,8 +1,6 @@
 package br.com.pagbanks.projeto_onboarding.entity;
 
-import br.com.pagbanks.projeto_onboarding.dto.ItemDto;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -36,10 +34,6 @@ public class Item {
         this.price = price;
         this.amount = amount;
     }
-
-//    public static Item from(ItemDto itemDto) {
-//        return new Item(itemDto.id(), itemDto.name(), itemDto.price(), itemDto.amount());
-//    }
 
     @Override
     public String toString() {

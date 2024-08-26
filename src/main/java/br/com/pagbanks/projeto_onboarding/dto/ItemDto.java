@@ -1,7 +1,6 @@
 package br.com.pagbanks.projeto_onboarding.dto;
 
 
-import br.com.pagbanks.projeto_onboarding.entity.Item;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
 
@@ -13,15 +12,6 @@ public record ItemDto(
         Double price,
         Integer amount
 ) {
-
-//        public static ItemDto from(Item item){
-//                return new ItemDto(item.getId(), item.getName(), item.getPrice(), item.getAmount());
-//        }
-
-
-
-
-
 
 }
 

@@ -2,14 +2,11 @@ package br.com.pagbanks.projeto_onboarding.controller;
 
 import br.com.pagbanks.projeto_onboarding.dto.CartDto;
 import br.com.pagbanks.projeto_onboarding.entity.Cart;
-import br.com.pagbanks.projeto_onboarding.entity.Item;
 import br.com.pagbanks.projeto_onboarding.mapper.CartMapper;
 import br.com.pagbanks.projeto_onboarding.service.CartService;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,12 +20,12 @@ public class CartController {
 
     @PostMapping
     public ResponseEntity<Cart> saveCart(@RequestBody CartDto cartDto) {
-     var cart = cartService.save(CartMapper.toCartFrom(cartDto));
-     return ResponseEntity.status(HttpStatus.CREATED).body(cart);
+        var cart = cartService.save(CartMapper.toCartFrom(cartDto));
+        return ResponseEntity.status(HttpStatus.CREATED).body(cart);
     }
 
     @GetMapping
-        public ResponseEntity<List<Cart>> list(){
+    public ResponseEntity<List<Cart>> list(){
         return ResponseEntity.ok(cartService.findAll());
     }
 
