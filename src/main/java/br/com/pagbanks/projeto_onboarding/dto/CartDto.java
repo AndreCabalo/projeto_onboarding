@@ -14,13 +14,14 @@ public record CartDto(
         @CreatedDate
         @JsonProperty("creation_date")
         LocalDate creationDate,
-        @JsonProperty("total_value")
         Double totalValue
 
 ) {
 
-        public CartDto {
-                if (totalValue == null) {totalValue = 0.0;}
+    public CartDto {
+        if (totalValue == null) {
+            totalValue = 0.0;
         }
+    }
 
 }

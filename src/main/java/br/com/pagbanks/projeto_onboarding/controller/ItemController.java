@@ -26,24 +26,24 @@ public class ItemController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Item>> list(){
+    public ResponseEntity<List<Item>> list() {
         return ResponseEntity.ok(itemService.findAll());
     }
 
     @PutMapping
-    public ResponseEntity<Item> update(@RequestBody @Valid ItemDto itemdto){
+    public ResponseEntity<Item> update(@RequestBody @Valid ItemDto itemdto) {
         var item = itemService.update(itemdto.id(), ItemMapper.toItemFrom(itemdto));
         return ResponseEntity.ok(item);
     }
 
     @PutMapping("/add/{itemId}/{amount}")
-    public ResponseEntity<Item> addAmount(@PathVariable Long itemId, @PathVariable int amount){
+    public ResponseEntity<Item> addAmount(@PathVariable Long itemId, @PathVariable int amount) {
         var item = itemService.addAmount(itemId, amount);
         return ResponseEntity.ok(item);
     }
 
     @DeleteMapping("/{itemId}")
-    public ResponseEntity<Void> delete(@PathVariable Long itemId){
+    public ResponseEntity<Void> delete(@PathVariable Long itemId) {
         itemService.delete(itemId);
         return ResponseEntity.noContent().build();
     }

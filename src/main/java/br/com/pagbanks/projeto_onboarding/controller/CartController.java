@@ -25,31 +25,31 @@ public class CartController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Cart>> list(){
+    public ResponseEntity<List<Cart>> list() {
         return ResponseEntity.ok(cartService.findAll());
     }
 
     @GetMapping("/{cartId}")
-    public ResponseEntity<Cart> getCartById(@PathVariable Long cartId){
+    public ResponseEntity<Cart> getCartById(@PathVariable Long cartId) {
         Cart cart = cartService.findById(cartId);
         return ResponseEntity.ok(cart);
     }
 
     @DeleteMapping("/{cartId}")
-    public ResponseEntity<Void> delete(@PathVariable Long cartId){
+    public ResponseEntity<Void> delete(@PathVariable Long cartId) {
         cartService.delete(cartId);
         return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/{cartId}/remove/{itemId}")
-    public ResponseEntity<Cart> removeItemFromCart(@PathVariable Long cartId, @PathVariable Long itemId){
-        Cart updateCart = cartService.removeItem(cartId,itemId);
+    public ResponseEntity<Cart> removeItemFromCart(@PathVariable Long cartId, @PathVariable Long itemId) {
+        Cart updateCart = cartService.removeItem(cartId, itemId);
         return ResponseEntity.ok(updateCart);
     }
 
     @PutMapping("/{cartId}/add/{itemId}")
-    public ResponseEntity<Cart> addItemFromCart(@PathVariable Long cartId, @PathVariable Long itemId){
-        Cart updateCart = cartService.addItem(cartId,itemId);
+    public ResponseEntity<Cart> addItemFromCart(@PathVariable Long cartId, @PathVariable Long itemId) {
+        Cart updateCart = cartService.addItem(cartId, itemId);
         return ResponseEntity.ok(updateCart);
     }
 

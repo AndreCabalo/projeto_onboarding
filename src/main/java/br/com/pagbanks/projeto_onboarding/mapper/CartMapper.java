@@ -11,7 +11,7 @@ public class CartMapper {
 
 
     public static Cart toCartFrom(CartDto cartDto) {
-        return new Cart(cartDto.id(),cartDto.listItens(),cartDto.creationDate(),cartDto.totalValue());
+        return new Cart(cartDto.id(), cartDto.listItens(), cartDto.creationDate(), cartDto.totalValue());
 
     }
 }

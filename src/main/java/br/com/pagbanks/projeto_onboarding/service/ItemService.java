@@ -7,6 +7,7 @@ import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -33,15 +34,15 @@ public class ItemService {
     public Item update(Long id, Item item) {
         log.info("m=update, msg=update_item, item={}", item);
 
-        Item existingItem= itemRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Item not found with id : " + id));
+        Item existingItem = itemRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Item not found with id : " + id));
 
-        if(item.getName() != null){
+        if (item.getName() != null) {
             existingItem.setName(item.getName());
         }
-        if(item.getAmount() != null){
+        if (item.getAmount() != null) {
             existingItem.setAmount(item.getAmount());
         }
-        if(item.getPrice() != null){
+        if (item.getPrice() != null) {
             existingItem.setPrice(item.getPrice());
         }
         return itemRepository.save(existingItem);
@@ -50,10 +51,10 @@ public class ItemService {
     @Transactional
     public void delete(Long id) {
         Optional<Item> optionalItem = itemRepository.findById(id);
-        if(optionalItem.isPresent()){
+        if (optionalItem.isPresent()) {
             itemRepository.delete(optionalItem.get());
             log.info("m=delete, msg=deleting_item, item={}", itemRepository.findById(id));
-        }else {
+        } else {
             throw new ResourceNotFoundException("Item not deleted, because item id not found !");
         }
     }
@@ -70,7 +71,7 @@ public class ItemService {
 
     @Transactional
     public Item addAmount(Long id, int amount) {
-        log.info("m=addAmount, msg=addAmount_item, itemId={}, amount{}",id,amount);
+        log.info("m=addAmount, msg=addAmount_item, itemId={}, amount{}", id, amount);
         Item item = itemRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Item id not found, with id = " + id));
 
