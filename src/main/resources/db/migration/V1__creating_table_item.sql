@@ -9,8 +9,7 @@ CREATE TABLE items (
 
 CREATE TABLE carts (
     id BIGINT PRIMARY KEY NOT NULL AUTO_INCREMENT,
-        creation_date DATE,
-        total_value DECIMAL(10,2)
+        creation_date DATE
 );
 
 CREATE TABLE carts_items (
