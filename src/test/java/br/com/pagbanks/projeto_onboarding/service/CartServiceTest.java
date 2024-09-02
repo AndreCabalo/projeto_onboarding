@@ -113,7 +113,6 @@ class CartServiceTest {
         verify(cartRepository, Mockito.times(1)).findAll();
     }
 
-    //TODO Falta este teste tbm
     @Test
     @DisplayName("Should add an item to the Cart, when the item id and cart id exist, and there is sufficient quantity")
     void addItemSuccess() {
