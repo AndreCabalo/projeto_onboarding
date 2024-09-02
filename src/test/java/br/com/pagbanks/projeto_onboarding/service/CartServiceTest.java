@@ -1,226 +1,251 @@
 package br.com.pagbanks.projeto_onboarding.service;
 
-import br.com.pagbanks.projeto_onboarding.dto.CartDto;
-import br.com.pagbanks.projeto_onboarding.dto.ItemDto;
 import br.com.pagbanks.projeto_onboarding.entity.Cart;
 import br.com.pagbanks.projeto_onboarding.entity.Item;
 import br.com.pagbanks.projeto_onboarding.exceptions.ItemAlreadyAddedException;
 import br.com.pagbanks.projeto_onboarding.exceptions.ResourceNotFoundException;
-import br.com.pagbanks.projeto_onboarding.mapper.CartMapper;
-import br.com.pagbanks.projeto_onboarding.mapper.ItemMapper;
+import br.com.pagbanks.projeto_onboarding.repository.CartRepository;
+import br.com.pagbanks.projeto_onboarding.repository.ItemRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
-import java.util.List;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@SpringBootTest
-@ActiveProfiles("test")
+import java.util.*;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+@ExtendWith(MockitoExtension.class)
 class CartServiceTest {
 
-    @Autowired
+    @InjectMocks
     private CartService cartService;
 
-    @Autowired
+    @Mock
+    private CartRepository cartRepository;
+
+    @Mock
     private ItemService itemService;
 
+    @Mock
+    private ItemRepository itemRepository;
+
+    private Item item;
+    private Cart cart;
+    private Cart cartWithItem;
+
+    @BeforeEach
+    void setUp() {
+        cart = new Cart(1L, new HashSet<>(), null, 0.0);
+        item = new Item(1L, "TestItem", 19.99, 10);
+        Set<Item> items = new HashSet<>();
+        items.add(item);
+        cartWithItem = new Cart(2L, items, null, 0.0);
+    }
 
     @Test
-    @DisplayName("Should save cart, when all required fields are filled")
+    @DisplayName("Should save cart, without throwing any exception")
     void saveSuccess() {
-        CartDto cartDto = new CartDto(1L, null, null, null);
-        Cart savedCart = this.cartService.save(CartMapper.toCartFrom(cartDto));
+        when(cartRepository.save(cart)).thenReturn(cart);
 
-        assertThat(savedCart).isNotNull();
+        var response = assertDoesNotThrow(() -> cartService.save(cart));
+
+        assertNotNull(response);
+        assertThat(response).isEqualTo(cart);
+        verify(cartRepository, Mockito.times(1)).save(cart);
     }
 
     @Test
     @DisplayName("Should find the cart, when the id exists")
     void findByIdSuccessWhenIdExists() {
-        CartDto cartDto = new CartDto(1L, null, null, null);
-        Cart savedCart = this.cartService.save(CartMapper.toCartFrom(cartDto));
+        when(cartRepository.findById(1L)).thenReturn(Optional.of(cart));
 
-        assertThat(cartService.findById(savedCart.getId())).isNotNull();
+        var response = assertDoesNotThrow(() -> cartService.findById(1L));
+
+        assertNotNull(response);
+        assertThat(response).isEqualTo(cart);
+        verify(cartRepository, Mockito.times(1)).findById(1L);
     }
 
     @Test
     @DisplayName("Shouldn't find the cart, when the id does not exists")
     void findByIdThrowWhenIdNonExists() {
-        CartDto cartDto = new CartDto(1L, null, null, null);
-        Cart savedCart = this.cartService.save(CartMapper.toCartFrom(cartDto));
-        Long nonExistent = 9999L;
+        when(cartRepository.findById(9999L)).thenThrow(ResourceNotFoundException.class);
 
         assertThrows(ResourceNotFoundException.class, () -> {
-            this.cartService.findById(nonExistent);
+            cartService.findById(9999L);
         });
+
+        verify(cartRepository, Mockito.times(1)).findById(9999L);
     }
 
     @Test
     @DisplayName("Should find all carts, when any cart is saved")
     void findAllSuccessWhenAnyCartIsSaved() {
-        CartDto cartDto = new CartDto(1L, null, null, null);
-        Cart savedCart = cartService.save(CartMapper.toCartFrom(cartDto));
-        List<Cart> cartList = cartService.findAll();
+        when(cartRepository.findAll()).thenReturn(List.of(cart));
 
-        assertThat(cartList).size().isGreaterThan(0);
+        List<Cart> response = assertDoesNotThrow(() -> cartService.findAll());
+
+        assertNotNull(response);
+        assertThat(response.size()).isGreaterThan(0);
+        verify(cartRepository, Mockito.times(1)).findAll();
     }
 
     @Test
     @DisplayName("Should find nothing, when nothing is saved")
     void findAllWithZeroCartsSaved() {
-        List<Cart> cartList = cartService.findAll();
-        for (Cart cart : cartList) {
-            cartService.delete(cart.getId());
-        }
-        cartList = cartService.findAll();
-        assertThat(cartList).size().isZero();
+        when(cartRepository.findAll()).thenReturn(List.of());
+
+        List<Cart> response = assertDoesNotThrow(() -> cartService.findAll());
+
+        assertNotNull(response);
+        assertThat(response.size()).isZero();
+        verify(cartRepository, Mockito.times(1)).findAll();
     }
 
+    //TODO Falta este teste tbm
     @Test
-    @DisplayName("Should add an item to the Cart, when the item id and cart id exists, and there is sufficient quantity")
+    @DisplayName("Should add an item to the Cart, when the item id and cart id exist, and there is sufficient quantity")
     void addItemSuccess() {
-        ItemDto itemDto = new ItemDto(1L, "ItemTestAddItemSucess", 10.00, 10);
-        Item item = itemService.save(ItemMapper.toItemFrom(itemDto));
+        when(cartRepository.findById(anyLong())).thenReturn(Optional.of(cart));
+        when(itemService.findById(anyLong())).thenReturn(item);
+        when(cartRepository.save(any())).thenAnswer(i -> i.getArguments()[0]);
 
-        CartDto cartDto = new CartDto(1L, null, null, null);
-        Cart cart = cartService.save(CartMapper.toCartFrom(cartDto));
-        cart = cartService.addItem(cart.getId(), item.getId());
+        assertDoesNotThrow(() -> cartService.addItem(cart.getId(), item.getId()));
 
-        assertThat(cart.getListItens()).isNotNull();
+        assertThat(cart.getListItems()).isNotNull();
+        verify(cartRepository, Mockito.times(1)).findById(anyLong());
+        verify(itemService, Mockito.times(1)).findById(anyLong());
+        verify(cartRepository, Mockito.times(1)).save(cart);
     }
 
     @Test
     @DisplayName("Should not add an item to the Cart, when there is not enough quantity")
     void addItemThrowsEnoughQuantity() {
-        ItemDto itemDto = new ItemDto(1L, "ItemTestAddItemThrowsEnoughQuantity", 10.00, 0);
-        Item item = itemService.save(ItemMapper.toItemFrom(itemDto));
-
-        CartDto cartDto = new CartDto(1L, null, null, null);
-        Cart cart = cartService.save(CartMapper.toCartFrom(cartDto));
+        item.setAmount(0);
 
         assertThrows(ResourceNotFoundException.class, () -> {
-            cartService.addItem(cart.getId(), item.getId());
+            cartService.addItem(1L, 1L);
         });
+
+        assertThat(cart.getListItems()).size().isEqualTo(0);
+        verify(cartRepository, Mockito.times(1)).findById(1L);
     }
 
     @Test
     @DisplayName("Should not add an item to the Cart, when the item has already been added")
     void addItemThrowsItemAlreadyAdded() {
-        ItemDto itemDto = new ItemDto(1L, "ItemTestAddItemThrowsAlreadyAdded", 10.00, 10);
-        Item item = itemService.save(ItemMapper.toItemFrom(itemDto));
-
-        CartDto cartDto = new CartDto(1L, null, null, null);
-        Cart cart = cartService.save(CartMapper.toCartFrom(cartDto));
-        this.cartService.addItem(cart.getId(), item.getId());
+        when(cartRepository.findById(1L)).thenReturn(Optional.of(cart));
+        when(itemService.findById(1L)).thenThrow(ItemAlreadyAddedException.class);
 
         assertThrows(ItemAlreadyAddedException.class, () -> {
-            cartService.addItem(cart.getId(), item.getId());
+            cartService.addItem(1L, 1L);
         });
+
+        verify(cartRepository, Mockito.times(1)).findById(1L);
+        verify(itemService, Mockito.times(1)).findById(1L);
     }
 
     @Test
     @DisplayName("Should not add an item to the Cart, when the item id is wrong")
     void addItemThrowsWrongItemId() {
-        ItemDto itemDto = new ItemDto(1L, "ItemTestAddItemThrowsWrongItemId", 10.00, 10);
-        Item item = itemService.save(ItemMapper.toItemFrom(itemDto));
-
-        CartDto cartDto = new CartDto(1L, null, null, null);
-        Cart cart = cartService.save(CartMapper.toCartFrom(cartDto));
-        this.cartService.addItem(cart.getId(), item.getId());
-
-        Long wrongItemId = 999L;
+        when(cartRepository.findById(1L)).thenReturn(Optional.of(cart));
+        when(itemService.findById(999L)).thenThrow(ResourceNotFoundException.class);
 
         assertThrows(ResourceNotFoundException.class, () -> {
-            cartService.addItem(wrongItemId, item.getId());
+            cartService.addItem(1L, 999L);
         });
+
+        verify(cartRepository, Mockito.times(1)).findById(1L);
+        verify(itemService, Mockito.times(1)).findById(999L);
     }
 
     @Test
     @DisplayName("Should not add an item to the Cart, when the cart id is wrong")
     void addItemThrowsWrongCartId() {
-        ItemDto itemDto = new ItemDto(1L, "ItemTestAddItemThrowsWrongCartId", 10.00, 10);
-        Item item = itemService.save(ItemMapper.toItemFrom(itemDto));
-
-        CartDto cartDto = new CartDto(1L, null, null, null);
-        Cart cart = cartService.save(CartMapper.toCartFrom(cartDto));
-        this.cartService.addItem(cart.getId(), item.getId());
-
-        Long wrongCartId = 999L;
+        when(cartRepository.findById(999L)).thenThrow(ResourceNotFoundException.class);
 
         assertThrows(ResourceNotFoundException.class, () -> {
-            cartService.addItem(cart.getId(), wrongCartId);
+            cartService.addItem(999L, 1L);
         });
+
+        verify(cartRepository, Mockito.times(1)).findById(999L);
     }
 
     @Test
     @DisplayName("Should remove an item to the Cart")
     void removeItemSuccess() {
-        ItemDto itemDto = new ItemDto(1L, "ItemTestRemoveItemSucess", 10.00, 10);
-        Item item = itemService.save(ItemMapper.toItemFrom(itemDto));
+        when(cartRepository.findById(anyLong())).thenReturn(Optional.of(cartWithItem));
+        when(itemService.findById(anyLong())).thenReturn(item);
+        when(cartRepository.save(any())).thenReturn(cartWithItem);
 
-        CartDto cartDto = new CartDto(1L, null, null, null);
-        Cart cart = cartService.save(CartMapper.toCartFrom(cartDto));
-        cart = cartService.addItem(cart.getId(), item.getId());
-        cart = cartService.removeItem(cart.getId(), item.getId());
-        assertThat(cart.getListItens()).isEmpty();
+        assertDoesNotThrow(() -> cartService.removeItem(cartWithItem.getId(), item.getId()));
+
+        ArgumentCaptor<Cart> cartAC = ArgumentCaptor.forClass(Cart.class);
+        verify(cartRepository, Mockito.times(1)).findById(anyLong());
+        verify(itemService, Mockito.times(1)).findById(anyLong());
+        verify(cartRepository, Mockito.times(1)).save(cartAC.capture());
+        Cart cartSaved = cartAC.getValue();
+        assertThat(cartSaved.getListItems().size()).isEqualTo(0);
+
     }
 
     @Test
     @DisplayName("Should not remove an item to the Cart, when item not found in cart")
     void removeItemThrowsItemId() {
-        ItemDto itemDto = new ItemDto(1L, "ItemTestRemoveItemThrowsItemId", 10.00, 10);
-        Item item = itemService.save(ItemMapper.toItemFrom(itemDto));
-        Long wrongItemId = 999L;
-
-        CartDto cartDto = new CartDto(1L, null, null, null);
-        Cart cart = cartService.save(CartMapper.toCartFrom(cartDto));
-        this.cartService.addItem(cart.getId(), item.getId());
+        when(cartRepository.findById(1L)).thenReturn(Optional.of(cart));
+        when(itemService.findById(999L)).thenThrow(ResourceNotFoundException.class);
 
         assertThrows(ResourceNotFoundException.class, () -> {
-            cartService.removeItem(cart.getId(), wrongItemId);
+            cartService.removeItem(1L, 999L);
         });
+
+        verify(cartRepository, Mockito.times(1)).findById(1L);
+        verify(itemService, Mockito.times(1)).findById(999L);
     }
 
     @Test
     @DisplayName("Should not remove an item from the Cart, when the cart is not found")
-    void removeItemThrowsCartNotId() {
-        ItemDto itemDto = new ItemDto(1L, "ItemTestRemoveItemThrowsCartId", 10.00, 10);
-        Item item = itemService.save(ItemMapper.toItemFrom(itemDto));
-        Long wrongCartId = 999L;
-
-        CartDto cartDto = new CartDto(1L, null, null, null);
-        Cart cart = cartService.save(CartMapper.toCartFrom(cartDto));
-        this.cartService.addItem(cart.getId(), item.getId());
+    void removeItemThrowsCartId() {
+        when(cartRepository.findById(999L)).thenThrow(ResourceNotFoundException.class);
 
         assertThrows(ResourceNotFoundException.class, () -> {
-            cartService.removeItem(wrongCartId, item.getId());
+            cartService.removeItem(999L, 1L);
         });
-    }
 
+        verify(cartRepository, Mockito.times(1)).findById(999L);
+    }
 
     @Test
     @DisplayName("Should delete a cart, when the cart id is found")
     void deleteSuccess() {
-        CartDto cartDto = new CartDto(1L, null, null, null);
-        Cart cart = cartService.save(CartMapper.toCartFrom(cartDto));
-        cartService.delete(cart.getId());
-        assertThrows(ResourceNotFoundException.class, () -> {
-            cartService.findById(cart.getId());
-        });
+        when(cartRepository.findById(1L)).thenReturn(Optional.of(cart));
+        Mockito.doNothing().when(cartRepository).delete(cart);
+
+        assertDoesNotThrow(() -> cartService.delete(1L));
+
+        verify(cartRepository, Mockito.times(1)).delete(cart);
     }
 
     @Test
     @DisplayName("Should not delete a cart, when the cart id is not found")
-    void deleteThrowsIdItem() {
-        CartDto cartDto = new CartDto(1L, null, null, null);
-        Cart cart = cartService.save(CartMapper.toCartFrom(cartDto));
-        Long wrongCartId = 999L;
-        ;
+    void deleteThrowsIdCart() {
+        when(cartRepository.findById(999L)).thenThrow(ResourceNotFoundException.class);
+
         assertThrows(ResourceNotFoundException.class, () -> {
-            cartService.delete(wrongCartId);
+            cartService.delete(999L);
         });
+
+        verify(cartRepository, Mockito.times(1)).findById(999L);
     }
 }

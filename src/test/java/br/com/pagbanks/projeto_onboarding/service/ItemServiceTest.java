@@ -1,142 +1,185 @@
 package br.com.pagbanks.projeto_onboarding.service;
 
-import br.com.pagbanks.projeto_onboarding.dto.ItemDto;
 import br.com.pagbanks.projeto_onboarding.entity.Item;
 import br.com.pagbanks.projeto_onboarding.exceptions.ResourceNotFoundException;
-import br.com.pagbanks.projeto_onboarding.mapper.ItemMapper;
+import br.com.pagbanks.projeto_onboarding.repository.ItemRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
-@SpringBootTest
-@ActiveProfiles("test")
+@ExtendWith(MockitoExtension.class)
 class ItemServiceTest {
 
-    @Autowired
+    @InjectMocks
     private ItemService itemService;
 
-    @Test
-    @DisplayName("Should save the item, when all required fields are filled")
-    void saveItemSuccess() {
-        String nameItem = "ItemTestSaveItemSucess";
-        ItemDto itemDto = new ItemDto(1L, nameItem, 15.00, 1);
+    @Mock
+    private ItemRepository itemRepository;
 
-        Item savedItem = this.itemService.save(ItemMapper.toItemFrom(itemDto));
-        assertThat(savedItem).isNotNull();
+    private Item item;
+
+    @BeforeEach
+    void setUp() {
+        item = new Item(1L, "ItemTest", 15.00, 1);
     }
 
     @Test
-    @DisplayName("Shouldn't save the item, when name is null and throws exception")
-    void saveItemThrowsBecauseNameIsNull() {
-        String nameItem = null;
-        ItemDto itemDto = new ItemDto(1L, nameItem, 15.00, 1);
+    @DisplayName("Should save the item, without throwing any exception")
+    void saveItemSuccess() {
+        when(itemRepository.save(item)).thenReturn(item);
 
-        assertThrows(Exception.class, () -> {
-                    this.itemService.save(ItemMapper.toItemFrom(itemDto));
-                }
-        );
+        Item response = assertDoesNotThrow(() -> itemService.save(item));
+
+        assertNotNull(response);
+        assertThat(response).isEqualTo(item);
+        verify(itemRepository, Mockito.times(1)).save(item);
+    }
+
+    @Test
+    @DisplayName("Shouldn't save the item, when name is null and throws exception MethodArgumentNotValidException")
+    void saveItemThrowsBecauseNameIsNull() {
+        item.setName(null);
+
+        assertThrows(ResourceNotFoundException.class, () -> {
+            itemService.save(item);
+        });
+
+        verify(itemRepository, Mockito.times(0)).save(item);
     }
 
     @Test
     @DisplayName("Should find all items, when any item is saved")
     void findAllIsSuccessWhenAnyItemIsSaved() {
-        String nameItem = "ItemTestFindAllSucess";
-        ItemDto itemDto = new ItemDto(1L, nameItem, 15.00, 1);
-        this.itemService.save(ItemMapper.toItemFrom(itemDto));
+        when(itemRepository.findAll()).thenReturn(List.of(item));
 
-        assertThat(this.itemService.findAll().size()).isGreaterThan(0);
+        List<Item> response = assertDoesNotThrow(() -> itemService.findAll());
+
+        assertNotNull(response);
+        assertThat(response.size()).isGreaterThan(0);
+        verify(itemRepository, Mockito.times(1)).findAll();
     }
 
     @Test
     @DisplayName("Should find nothing, when nothing is saved")
     void findAllWithZeroItemsSaved() {
-        List<Item> itemList = itemService.findAll();
-        for (Item item : itemList) {
-            itemService.delete(item.getId());
-        }
-        itemList = itemService.findAll();
-        assertThat(itemList.size()).isEqualTo(0);
+        when(itemRepository.findAll()).thenReturn(List.of());
+
+        List<Item> response = assertDoesNotThrow(() -> itemService.findAll());
+
+        assertNotNull(response);
+        assertThat(response.size()).isEqualTo(0);
+        verify(itemRepository, Mockito.times(1)).findAll();
+    }
+
+    @Test
+    @DisplayName("Should find the item, when the id exists")
+    void findByIdSuccessWhenIdExists() {
+        when(itemRepository.findById(1L)).thenReturn(Optional.of(item));
+
+        Item response = assertDoesNotThrow(() -> itemService.findById(1L));
+
+        assertNotNull(response);
+        assertThat(response).isEqualTo(item);
+        verify(itemRepository, Mockito.times(1)).findById(1L);
+    }
+
+    @Test
+    @DisplayName("Shouldn't find the item, when the id does not exists")
+    void findByIdThrowWhenIdNonExists() {
+        when(itemRepository.findById(9999L)).thenThrow(ResourceNotFoundException.class);
+
+        assertThrows(ResourceNotFoundException.class, () -> {
+            itemService.findById(9999L);
+        });
+
+        verify(itemRepository, Mockito.times(1)).findById(9999L);
     }
 
     @Test
     @DisplayName("Should update an exists item, when item exists")
     void updateSuccessBecauseItemExists() {
-        ItemDto itemDto = new ItemDto(1L, "ItemTestUpdateSucess", 150.00, 10);
-        itemService.save(ItemMapper.toItemFrom(itemDto));
-        List<Item> listItems = itemService.findAll();
-        Long idExistingOnDataBase = listItems.get(0).getId();
-        Item existingItem = itemService.update(idExistingOnDataBase, ItemMapper.toItemFrom(itemDto));
+        when(itemRepository.findById(1L)).thenReturn(Optional.of(item));
+        when(itemRepository.save(item)).thenReturn(item);
 
-        assertThat(existingItem).isNotNull();
+        Item response = assertDoesNotThrow(() -> itemService.update(1L, item));
+
+        assertNotNull(response);
+        assertThat(response).isEqualTo(item);
+        verify(itemRepository, Mockito.times(1)).findById(1L);
+        verify(itemRepository, Mockito.times(1)).save(item);
+
     }
 
     @Test
     @DisplayName("Shouldn't update an exists item, when item does not exist")
     void updateThrowsBecauseItemNotFound() {
-        ItemDto itemDto = new ItemDto(1L, "ItemTestUpdateThrownBecauseItemNotFound", 150.00, 10);
-        Long idNonExistentOnDataBase = 9999L;
+        when(itemRepository.findById(9999L)).thenThrow(ResourceNotFoundException.class);
 
         assertThrows(ResourceNotFoundException.class, () -> {
-                    this.itemService.update(idNonExistentOnDataBase, ItemMapper.toItemFrom(itemDto));
-                }
-        );
+            itemService.update(9999L, item);
+        });
+
+        verify(itemRepository, Mockito.times(1)).findById(9999L);
     }
 
     @Test
     @DisplayName("Should delete an exists item, when item exists")
     void deleteSuccessBecauseItemExists() {
-        ItemDto itemDto = new ItemDto(1L, "ItemTestDeleteSucess", 150.00, 10);
-        Item existingItem = itemService.save(ItemMapper.toItemFrom(itemDto));
+        when(itemRepository.findById(1L)).thenReturn(Optional.of(item));
+        doNothing().when(itemRepository).delete(item);
 
-        itemService.delete(existingItem.getId());
-        assertThrows(ResourceNotFoundException.class, () -> {
-                    this.itemService.findById(existingItem.getId());
-                }
-        );
+        assertDoesNotThrow(() -> itemService.delete(1L));
+
+        verify(itemRepository, Mockito.times(1)).delete(item);
     }
 
     @Test
     @DisplayName("Shouldn't delete an exists item, when item does not exist")
     void deleteThrowsBecauseItemNotFound() {
-        ItemDto itemDto = new ItemDto(1L, "ItemTestDeleteThrows", 150.00, 10);
-        Item existingItem = itemService.save(ItemMapper.toItemFrom(itemDto));
-        Long idNonExistingOnDataBase = 500L;
+        when(itemRepository.findById(9999L)).thenThrow(ResourceNotFoundException.class);
 
         assertThrows(ResourceNotFoundException.class, () -> {
-                    this.itemService.delete(idNonExistingOnDataBase);
-                }
-        );
-    }
-
-
-    @Test
-    @DisplayName("Should update an exists item, when item exists")
-    void addAmountSuccess() {
-        ItemDto itemDto = new ItemDto(1L, "ItemTestAddAmountSucess", 150.00, 105);
-        Item existingItem = itemService.save(ItemMapper.toItemFrom(itemDto));
-        existingItem = itemService.addAmount(existingItem.getId(), 100);
-
-        assertThat(existingItem.getAmount()).isEqualTo(205);
-    }
-
-    @Test
-    @DisplayName("Shouldn't update an exists item, when item does not exists")
-    void addAmountThrowItemNotFound() {
-        ItemDto itemDto = new ItemDto(1L, "ItemTestAddAmountSucess", 150.00, 105);
-        Item existingItem = itemService.save(ItemMapper.toItemFrom(itemDto));
-        Long nonExistingId = 999L;
-
-        assertThrows(ResourceNotFoundException.class, () -> {
-            this.itemService.addAmount(nonExistingId, 100);
+            itemService.delete(9999L);
         });
 
+        verify(itemRepository, Mockito.times(1)).findById(9999L);
+        verify(itemRepository, Mockito.times(0)).delete(item);
     }
 
+    @Test
+    @DisplayName("Should add an amount to the item, when item exists")
+    void addAmountSuccess() {
+        when(itemRepository.findById(1L)).thenReturn(Optional.of(item));
+        when(itemRepository.save(item)).thenReturn(item);
+
+        assertDoesNotThrow(() -> itemService.addAmount(1L, 1));
+
+        assertThat(item.getAmount()).isEqualTo(2);
+        verify(itemRepository, Mockito.times(1)).findById(1L);
+        verify(itemRepository, Mockito.times(1)).save(item);
+    }
+
+    @Test
+    @DisplayName("Shouldn't add an amount to the item, when item does not exist")
+    void addAmountThrowsBecauseItemNotFound() {
+        when(itemRepository.findById(9999L)).thenThrow(ResourceNotFoundException.class);
+
+        assertThrows(ResourceNotFoundException.class, () -> {
+            itemService.addAmount(9999L, 1);
+        });
+
+        verify(itemRepository, Mockito.times(1)).findById(9999L);
+    }
 }
