@@ -42,7 +42,7 @@ public class CartService {
 
     public List<Cart> findAll() {
         List<Cart> listCarts = cartRepository.findAll();
-        log.info("m=findAll, msg=findindAll_carts, carts={}", listCarts);
+        log.info("m=findAll, msg=findAll_carts, carts={}", listCarts);
         return listCarts;
     }
 
@@ -53,11 +53,11 @@ public class CartService {
         if (item.getAmount() <= 0) {
             throw new ResourceNotFoundException("Insufficient quantity in stock");
         } else {
-            if (cart.getListItens().contains(item)) {
+            if (cart.getListItems().contains(item)) {
                 throw new ItemAlreadyAddedException("Item already added to cart");
             } else {
                 item.setAmount(item.getAmount() - 1);
-                cart.getListItens().add(item);
+                cart.getListItems().add(item);
                 cart.setTotalValue(cart.getTotalValue() + item.getPrice());
                 log.info("m=addItem, msg=addItem_carts, cart={} item={}", cart, item);
                 return cartRepository.save(cart);
@@ -69,9 +69,9 @@ public class CartService {
     public Cart removeItem(Long idCart, Long idItem) {
         Cart cart = findById(idCart);
         Item item = itemService.findById(idItem);
-        if (cart.getListItens().contains(item)) {
-            Item cartItem = cart.getListItens().stream().filter(i -> i.getId().equals(idItem)).findFirst().get();
-            cart.getListItens().remove(cartItem);
+        if (cart.getListItems().contains(item)) {
+            Item cartItem = cart.getListItems().stream().filter(i -> i.getId().equals(idItem)).findFirst().get();
+            cart.getListItems().remove(cartItem);
             cart.setTotalValue((cart.getTotalValue()) - item.getPrice());
             log.info("m=removeItem, msg=removeItem_carts, cart={} item={}", cart, item);
             itemService.addAmount(item.getId(), 1);

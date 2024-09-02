@@ -2,6 +2,7 @@ package br.com.pagbanks.projeto_onboarding.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
 import java.util.ArrayList;
@@ -21,10 +22,11 @@ public class Item {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @SequenceGenerator(name = "items_seq", sequenceName = "items_seq", allocationSize = 1)
     private Long id;
+    @NotBlank(message = "The name cannot be empty")
     private String name;
     private Double price;
     private Integer amount;
-    @ManyToMany(mappedBy = "listItens")
+    @ManyToMany(mappedBy = "listItems")
     @JsonIgnore
     private List<Cart> carts = new ArrayList<>();
 

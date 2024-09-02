@@ -8,6 +8,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -28,7 +29,7 @@ public class Cart {
     @JoinTable(name = "carts_items", joinColumns = @JoinColumn(name = "cart_id"), inverseJoinColumns = @JoinColumn(name = "item_id"))
     @JsonIgnoreProperties("carts")
     @JsonProperty("list_items")
-    private Set<Item> listItens;
+    private Set<Item> listItems;
     @CreatedDate
     @Column(name = "creation_date")
     @JsonProperty("creation_date")
@@ -38,10 +39,10 @@ public class Cart {
     private Double totalValue = 0.0;
 
     public Double getTotalValue() {
-        if (listItens == null) {
+        if (listItems == null) {
             return totalValue = 0.0;
         } else {
-            return totalValue = listItens.stream().mapToDouble(Item::getPrice).sum();
+            return totalValue = listItems.stream().mapToDouble(Item::getPrice).sum();
         }
     }
 
@@ -49,7 +50,7 @@ public class Cart {
     public String toString() {
         return "Cart{" +
                 "id=" + id +
-                ", listItens=" + listItens +
+                ", listItems=" + listItems +
                 ", creationDate=" + creationDate +
                 ", totalValue=" + totalValue +
                 '}';

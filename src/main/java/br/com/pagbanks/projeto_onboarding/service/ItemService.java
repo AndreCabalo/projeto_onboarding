@@ -4,6 +4,7 @@ import br.com.pagbanks.projeto_onboarding.entity.Item;
 import br.com.pagbanks.projeto_onboarding.exceptions.ResourceNotFoundException;
 import br.com.pagbanks.projeto_onboarding.repository.ItemRepository;
 import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,8 +20,11 @@ public class ItemService {
     private ItemRepository itemRepository;
 
     @Transactional
-    public Item save(Item item) {
+    public Item save(@Valid Item item) {
         log.info("m=save, msg=saving_item, item={}", item);
+        if(item.getName() == null){
+            throw new ResourceNotFoundException("Item name is null");
+        }
         return itemRepository.save(item);
     }
 

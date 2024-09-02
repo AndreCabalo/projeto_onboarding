@@ -1,6 +1,5 @@
 package br.com.pagbanks.projeto_onboarding.dto;
 
-
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
 
