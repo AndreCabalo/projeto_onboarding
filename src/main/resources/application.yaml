@@ -1,0 +1,21 @@
+spring:
+  application:
+    name: projeto_onboarding
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/cart
+    username: root
+    password: root
+
+  jpa:
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+  profiles:
+    active: default
+
+  server:
+    error:
+      include-stacktrace: never
