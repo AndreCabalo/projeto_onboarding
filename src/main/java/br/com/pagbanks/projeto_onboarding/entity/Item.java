@@ -46,4 +46,32 @@ public class Item {
                 ", amount=" + amount +
                 '}';
     }
+
+    public Integer increasesAmount(Integer amount) {
+        setAmount(getAmount() + 1);
+        return getAmount();
+    }
+
+    public void decreasesAmount(Integer amount) {
+        this.amount -= amount;
+    }
+
+    public boolean verifyNameNullability() {
+        return this.name == null;
+    }
+
+    public void update(Item oldItem, Item updatedItem) {
+        if (oldItem.getName() != null) {
+            oldItem.setName(updatedItem.getName());
+        }
+        if (oldItem.getAmount() != null) {
+            oldItem.setAmount(updatedItem.getAmount());
+        }
+        if (oldItem.getPrice() != null) {
+            oldItem.setPrice(updatedItem.getPrice());
+        }
+
+    }
+
+
 }

@@ -1,8 +1,6 @@
 package br.com.pagbanks.projeto_onboarding.controller;
 
 import br.com.pagbanks.projeto_onboarding.dto.CartDto;
-import br.com.pagbanks.projeto_onboarding.entity.Cart;
-import br.com.pagbanks.projeto_onboarding.mapper.CartMapper;
 import br.com.pagbanks.projeto_onboarding.service.CartService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,20 +17,21 @@ public class CartController {
     private CartService cartService;
 
     @PostMapping
-    public ResponseEntity<Cart> saveCart(@RequestBody CartDto cartDto) {
-        var cart = cartService.save(CartMapper.toCartFrom(cartDto));
+    public ResponseEntity<CartDto> saveCart(@RequestBody CartDto cartDto) {
+        CartDto cart = cartService.save(cartDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(cart);
     }
 
     @GetMapping
-    public ResponseEntity<List<Cart>> list() {
+    public ResponseEntity<List<CartDto>> list() {
         return ResponseEntity.ok(cartService.findAll());
     }
 
     @GetMapping("/{cartId}")
-    public ResponseEntity<Cart> getCartById(@PathVariable Long cartId) {
-        Cart cart = cartService.findById(cartId);
-        return ResponseEntity.ok(cart);
+    public ResponseEntity<CartDto> getCartById(@PathVariable Long cartId) {
+        CartDto cartDto = cartService.findById(cartId);
+
+        return ResponseEntity.ok(cartDto);
     }
 
     @DeleteMapping("/{cartId}")
@@ -41,15 +40,17 @@ public class CartController {
         return ResponseEntity.noContent().build();
     }
 
+
     @PutMapping("/{cartId}/remove/{itemId}")
-    public ResponseEntity<Cart> removeItemFromCart(@PathVariable Long cartId, @PathVariable Long itemId) {
-        Cart updateCart = cartService.removeItem(cartId, itemId);
+    public ResponseEntity<CartDto> removeItemFromCart(@PathVariable Long cartId, @PathVariable Long itemId) {
+        CartDto updateCart = cartService.removeItem(cartId, itemId);
         return ResponseEntity.ok(updateCart);
     }
 
+
     @PutMapping("/{cartId}/add/{itemId}")
-    public ResponseEntity<Cart> addItemFromCart(@PathVariable Long cartId, @PathVariable Long itemId) {
-        Cart updateCart = cartService.addItem(cartId, itemId);
+    public ResponseEntity<CartDto> addItemFromCart(@PathVariable Long cartId, @PathVariable Long itemId) {
+        CartDto updateCart = cartService.addItem(cartId, itemId);
         return ResponseEntity.ok(updateCart);
     }
 

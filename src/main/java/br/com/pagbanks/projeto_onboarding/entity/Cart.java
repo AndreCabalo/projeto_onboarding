@@ -8,7 +8,6 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDate;
-import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -55,4 +54,20 @@ public class Cart {
                 ", totalValue=" + totalValue +
                 '}';
     }
+
+    public boolean listItemsContains(Object item) {
+        return listItems != null && listItems.contains(item);
+    }
+
+    public void removeItem(Object item) {
+        listItems.stream().filter(i -> i.equals(item)).findFirst().ifPresent(listItems::remove);
+        totalValue -= ((Item) item).getPrice();
+    }
+
+    public void addItem(Object item) {
+        listItems.add((Item) item);
+        totalValue += ((Item) item).getPrice();
+    }
+
+
 }

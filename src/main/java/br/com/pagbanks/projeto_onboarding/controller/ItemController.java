@@ -1,8 +1,6 @@
 package br.com.pagbanks.projeto_onboarding.controller;
 
 import br.com.pagbanks.projeto_onboarding.dto.ItemDto;
-import br.com.pagbanks.projeto_onboarding.entity.Item;
-import br.com.pagbanks.projeto_onboarding.mapper.ItemMapper;
 import br.com.pagbanks.projeto_onboarding.service.ItemService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,24 +18,24 @@ public class ItemController {
     private ItemService itemService;
 
     @PostMapping
-    public ResponseEntity<Item> saveItem(@RequestBody @Valid ItemDto itemDto) {
-        var item = itemService.save(ItemMapper.toItemFrom(itemDto));
+    public ResponseEntity<ItemDto> saveItem(@RequestBody @Valid ItemDto itemDto) {
+        ItemDto item = itemService.save(itemDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(item);
     }
 
     @GetMapping
-    public ResponseEntity<List<Item>> list() {
+    public ResponseEntity<List<ItemDto>> list() {
         return ResponseEntity.ok(itemService.findAll());
     }
 
     @PutMapping
-    public ResponseEntity<Item> update(@RequestBody @Valid ItemDto itemdto) {
-        var item = itemService.update(itemdto.id(), ItemMapper.toItemFrom(itemdto));
+    public ResponseEntity<ItemDto> update(@RequestBody @Valid ItemDto itemdto) {
+        var item = itemService.update(itemdto.id(), itemdto);
         return ResponseEntity.ok(item);
     }
 
     @PutMapping("/add/{itemId}/{amount}")
-    public ResponseEntity<Item> addAmount(@PathVariable Long itemId, @PathVariable int amount) {
+    public ResponseEntity<ItemDto> addAmount(@PathVariable Long itemId, @PathVariable int amount) {
         var item = itemService.addAmount(itemId, amount);
         return ResponseEntity.ok(item);
     }
@@ -49,8 +47,8 @@ public class ItemController {
     }
 
     @GetMapping("/{itemId}")
-    public ResponseEntity<Item> getItemById(@PathVariable Long itemId) {
-        Item item = itemService.findById(itemId);
+    public ResponseEntity<ItemDto> getItemById(@PathVariable Long itemId) {
+        ItemDto item = itemService.findById(itemId);
         return ResponseEntity.ok(item);
     }
 
